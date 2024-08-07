@@ -21,14 +21,15 @@ public class Drivebase {
     public ElapsedTime timer = new ElapsedTime();
     private PIDcontrol positionPID;
     private PIDcontrol headingPID;
+    public boolean disablePID = false;
     public double[] motorPowers;
     public Point targetPos;
 
     // PID values
     public static double Kp = 0.125;
     public static double Ki = 0;
-    public static double Kd = 0.00005;
-    public static double headingKp = 0.1;
+    public static double Kd = 0; //0.00005
+    public static double headingKp = 0.05; //0.1
     public static double headingKi = 0;
     public static double headingKd = 0;
 
@@ -98,17 +99,22 @@ public class Drivebase {
         double out = positionPID.update(Kp, Ki, Kd, distance, timer.time());
         double headingOut = headingPID.update(headingKp, headingKi, headingKd,targetPos.h - currentPos[2], timer.seconds());
 
+        if (disablePID) {
+            out = 1;
+        }
+
         double power = Math.min(out,1);
         double x = Math.sin(Math.toRadians(angle)) * power;
         double y = -Math.cos(Math.toRadians(angle)) * power;
         double r = (1 + (Boolean.compare(headingError > 0, false) * -2)) * Math.min(Math.abs(headingOut),1);
 
-        double multiplier = maxSpeed / speed;
+        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(r), 1);
+        double multiplier = speed / maxSpeed;
         return new double[] {
-                (y + x + r) * multiplier,
-                (y - x + r) * multiplier,
-                (y - x - r) * multiplier,
-                (y + x - r) * multiplier
+                ((y + x + r) / denominator) * multiplier,
+                ((y - x + r) / denominator) * multiplier,
+                ((y - x - r) / denominator) * multiplier,
+                ((y + x - r) / denominator) * multiplier
         };
     }
 
