@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Subsystems.Drivebase;
-import org.firstinspires.ftc.teamcode.Tools.Point;
+import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
+import org.firstinspires.ftc.teamcode.util.Pose2d;
 
 @Autonomous
 public class AutoTest2 extends LinearOpMode {
@@ -20,7 +20,7 @@ public class AutoTest2 extends LinearOpMode {
         while (opModeIsActive()) {
             boolean reachedEnd = false;
             if (gamepad1.b) {
-                reachedEnd = drivebase.toPosition(new Point(10,25,0));
+                reachedEnd = drivebase.toPosition(new Pose2d(10,25,0));
             } else {
                 double[] zeroPowers = {0,0,0,0};
                 drivebase.runMotors(zeroPowers);

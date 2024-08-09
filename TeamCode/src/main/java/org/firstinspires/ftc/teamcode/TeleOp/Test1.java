@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.SparkFunOTOS.SparkFunOTOS;
+import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
 
 @TeleOp
 public class Test1 extends LinearOpMode {
@@ -20,10 +21,14 @@ public class Test1 extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        DcMotor motorFrontLeft = hardwareMap.dcMotor.get("frontLeft");
+        Drivebase drivebase = new Drivebase(hardwareMap);
+
+        double[] motorPowers;
+
+        /*DcMotor motorFrontLeft = hardwareMap.dcMotor.get("frontLeft");
         DcMotor motorFrontRight = hardwareMap.dcMotor.get("frontRight");
         DcMotor motorBackLeft = hardwareMap.dcMotor.get("backLeft");
-        DcMotor motorBackRight = hardwareMap.dcMotor.get("backRight");
+        DcMotor motorBackRight = hardwareMap.dcMotor.get("backRight");*/
 
         myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
 
@@ -31,8 +36,8 @@ public class Test1 extends LinearOpMode {
 
         myOtos.setOffset(new SparkFunOTOS.Pose2D(x_offset, y_offset, 0));
 
-        motorBackLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        motorFrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        //motorBackLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        //motorFrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         FtcDashboard dashboard = FtcDashboard.getInstance();
         dashboard.setTelemetryTransmissionInterval(25);
@@ -94,15 +99,22 @@ public class Test1 extends LinearOpMode {
 
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
             double multiplier = (Boolean.compare(gamepad1.right_trigger > 0.1, false) * 2) + 1; // For slow mode
-            double frontLeftPower = (y + x + rx) / denominator / multiplier;
-            double backLeftPower = (y - x + rx) / denominator / multiplier;
-            double frontRightPower = (y - x - rx) / denominator / multiplier;
-            double backRightPower = (y + x - rx) / denominator / multiplier;
+            //double frontLeftPower = (y + x + rx) / denominator / multiplier;
+            //double backLeftPower = (y - x + rx) / denominator / multiplier;
+            //double frontRightPower = (y - x - rx) / denominator / multiplier;
+            //double backRightPower = (y + x - rx) / denominator / multiplier;
 
-            motorFrontLeft.setPower(frontLeftPower);
-            motorBackLeft.setPower(backLeftPower);
-            motorFrontRight.setPower(frontRightPower);
-            motorBackRight.setPower(backRightPower);
+            motorPowers = new double[]{
+                    (y + x + rx) / multiplier,
+                    (y - x + rx) / multiplier,
+                    (y - x - rx) / multiplier,
+                    (y + x - rx) / multiplier
+            };
+            drivebase.runMotors(motorPowers);
+            //motorFrontLeft.setPower(frontLeftPower);
+            //motorBackLeft.setPower(backLeftPower);
+            //motorFrontRight.setPower(frontRightPower);
+            //motorBackRight.setPower(backRightPower);
 
             telemetry.addLine("Press Y (triangle) on Gamepad to reset tracking");
             telemetry.addLine("Press X (square) on Gamepad to calibrate the IMU");

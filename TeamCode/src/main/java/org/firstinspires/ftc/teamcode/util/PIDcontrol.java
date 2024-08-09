@@ -1,11 +1,7 @@
-package org.firstinspires.ftc.teamcode.Tools;
-
-import com.qualcomm.robotcore.util.ElapsedTime;
+package org.firstinspires.ftc.teamcode.util;
 
 public class PIDcontrol {
-    private double Kp;
-    private double Ki;
-    private double Kd;
+    private double Kp, Ki, Kd;
     private double lastError;
     private double integralSum;
 
