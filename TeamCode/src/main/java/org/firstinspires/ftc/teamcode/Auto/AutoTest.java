@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
-import static java.lang.Double.isNaN;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.config.Config;
@@ -12,7 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.SparkFunOTOS.SparkFunOTOS;
+import org.firstinspires.ftc.teamcode.Subsystems.SparkFunOTOS;
 
 @Config
 @Autonomous

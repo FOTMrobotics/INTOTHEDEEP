@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.util;
+package org.firstinspires.ftc.teamcode.Util;
 
 public class Pose2d extends Vector2d {
     public double h;

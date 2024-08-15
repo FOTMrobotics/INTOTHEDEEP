@@ -1,12 +1,11 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
-import static java.lang.Double.NaN;
 import static java.lang.Double.isNaN;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.SparkFunOTOS.SparkFunOTOS;
+import org.firstinspires.ftc.teamcode.Subsystems.SparkFunOTOS;
 
 @TeleOp
 public class JoystickTest extends LinearOpMode {

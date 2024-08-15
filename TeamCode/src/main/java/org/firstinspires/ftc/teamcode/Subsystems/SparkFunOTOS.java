@@ -3,7 +3,7 @@
     
     Copyright (c) 2024 SparkFun Electronics
 */
-package org.firstinspires.ftc.teamcode.SparkFunOTOS;
+package org.firstinspires.ftc.teamcode.Subsystems;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;

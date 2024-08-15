@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.util;
+package org.firstinspires.ftc.teamcode.Util;
 
 public class PIDcontrol {
     private double Kp, Ki, Kd;

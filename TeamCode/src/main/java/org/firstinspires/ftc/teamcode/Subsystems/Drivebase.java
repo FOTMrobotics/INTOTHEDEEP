@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems;
+package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -8,9 +8,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.SparkFunOTOS.SparkFunOTOS;
-import org.firstinspires.ftc.teamcode.util.PIDcontrol;
-import org.firstinspires.ftc.teamcode.util.Pose2d;
+import org.firstinspires.ftc.teamcode.Util.PIDcontrol;
+import org.firstinspires.ftc.teamcode.Util.Pose2d;
 
 @Config
 public class Drivebase {
@@ -43,6 +42,8 @@ public class Drivebase {
     // Constraints
     public static double maxSpeed = 50; // in/s (Placeholder speed)
     public static double speed = 30; // Speed it should travel at
+
+    public double t;
 
     public Drivebase(HardwareMap hardwareMap) {
         motorFrontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
@@ -81,6 +82,7 @@ public class Drivebase {
         if (iterations == 15) {
             packet.put("velocity", velocity);
             packet.put("time", timer.seconds());
+            packet.put("t", t);
             iterations = 0;
         }
         dashboard.sendTelemetryPacket(packet);

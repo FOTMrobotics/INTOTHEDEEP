@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
-import org.firstinspires.ftc.teamcode.util.Pose2d;
+import org.firstinspires.ftc.teamcode.Subsystems.Drivebase;
+import org.firstinspires.ftc.teamcode.Util.Pose2d;
 
 @Autonomous
 public class AutoTest2 extends LinearOpMode {

@@ -7,11 +7,9 @@ import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import org.firstinspires.ftc.teamcode.SparkFunOTOS.SparkFunOTOS;
-import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
+import org.firstinspires.ftc.teamcode.Subsystems.SparkFunOTOS;
+import org.firstinspires.ftc.teamcode.Subsystems.Drivebase;
 
 @TeleOp
 public class Test1 extends LinearOpMode {
@@ -55,6 +53,7 @@ public class Test1 extends LinearOpMode {
             packet.put("x", pos.x);
             packet.put("y", pos.y);
             packet.put("heading", pos.h);
+            //packet.put("velocity", drivebase.velocity);
 
             fieldOverlay.setTranslation(-pos.y, pos.x);
             fieldOverlay.setRotation(Math.toRadians(pos.h+90));
