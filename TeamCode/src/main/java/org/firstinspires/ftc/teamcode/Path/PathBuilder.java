@@ -42,8 +42,8 @@ public class PathBuilder {
         return this;
     }
 
-    public PathBuilder ptOffsetHeading(Pose2d pose2d) {
-        this.points.add(path.ptOffsetHeading(pose2d));
+    public PathBuilder ptOffsetHeading(Pose2d pose2d, double angleOffset) {
+        this.points.add(path.ptOffsetHeading(pose2d, angleOffset));
         return this;
     }
 
