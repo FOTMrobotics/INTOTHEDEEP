@@ -24,6 +24,8 @@ public class AutoTest3 extends LinearOpMode {
                 .pt(new Vector2d(0,0))
                 .pt(new Vector2d(0,0))
                 .build();
+
+        path1.run();
         /*Pose2d[] points = {
                 new Pose2d(0,0,0),
                 new Pose2d(0,50,0),

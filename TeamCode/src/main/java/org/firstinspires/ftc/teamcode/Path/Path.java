@@ -22,9 +22,8 @@ public class Path {
     private Drivebase drivebase;
     public double radius = 8;
     public Vector2d startPoint;
-    public double[] targetPoint;
     public double t;
-    public int lineNum;
+    public int lineNum = 0;
 
     public Path(Drivebase Drivebase, List<Runnable> points, List<Runnable> actions, Vector2d startPoint) {
         drivebase = Drivebase;
@@ -43,10 +42,10 @@ public class Path {
         return null;
     }
 
-    public Runnable ptOffsetHeading(Pose2d pose2d) {
-        Vector2d p = circleLineInterception(drivebase.currentPos, startPoint, pose2d);
+    public Runnable ptOffsetHeading(Vector2d vector2d, double angleOffset) {
+        Vector2d p = circleLineInterception(drivebase.currentPos, startPoint, vector2d);
 
-        double targetHeading = Math.toDegrees(Math.atan2(drivebase.currentPos.y - p.y, drivebase.currentPos.x - p.x)) + 90 + pose2d.h;
+        double targetHeading = Math.toDegrees(Math.atan2(drivebase.currentPos.y - p.y, drivebase.currentPos.x - p.x)) + 90 + angleOffset;
         targetHeading = targetHeading <= 180 ? targetHeading : targetHeading - 360;
 
         drivebase.toPosition(new Pose2d(p.x, p.y, targetHeading));
@@ -86,7 +85,7 @@ public class Path {
         double xPos = drivebase.currentPos.x + distance * Math.cos(Math.toRadians(drivebase.currentPos.h + 90));
         double yPos = drivebase.currentPos.y + distance * Math.sin(Math.toRadians(drivebase.currentPos.h + 90));
 
-        t = drivebase.toPosition(new Pose2d(xPos, yPos, drivebase.currentPos.h)) ? 1 : 0;
+        while (t != 1) {t = drivebase.toPosition(new Pose2d(xPos, yPos, drivebase.currentPos.h)) ? 1 : 0;}
         return null;
     }
 
@@ -94,33 +93,39 @@ public class Path {
         double xPos = drivebase.currentPos.x + distance * Math.cos(Math.toRadians(drivebase.currentPos.h + 90));
         double yPos = drivebase.currentPos.y + distance * Math.sin(Math.toRadians(drivebase.currentPos.h + 90));
 
-        t = drivebase.toPosition(new Pose2d(-xPos, -yPos, drivebase.currentPos.h)) ? 1 : 0;
+        while (t != 1) {t = drivebase.toPosition(new Pose2d(-xPos, -yPos, drivebase.currentPos.h)) ? 1 : 0;}
         return null;
     }
 
+    // Unfinished, do not use
     public Runnable left(double distance) {
         return null;
     }
 
+    // Unfinished, do not use
     public Runnable right(double distance) {
         return null;
     }
 
     public Runnable turn(double angle) {
+        double targetAngle = drivebase.currentPos.h + angle;
+        targetAngle = targetAngle > 180 ? targetAngle - 360 : targetAngle < -180 ? targetAngle - 360 : targetAngle;
+        while (t != 1) {t = drivebase.toPosition(new Pose2d(drivebase.currentPos.x, drivebase.currentPos.y, targetAngle)) ? 1 : 0;}
         return null;
     }
 
     public Runnable setFollowRadius(double radius) {
         this.radius = radius;
+        t = 1;
         return null;
     }
 
     public Runnable setSpeed(double speed) {
-        this.drivebase.speed = speed;
+        drivebase.speed = speed;
+        t = 1;
         return null;
     }
 
-    // Maybe return true when reached end?
     public void run() {
         for (Runnable point : points) {
             drivebase.disablePID = true;
@@ -128,6 +133,12 @@ public class Path {
                 point.run();
             }
             t = 0;
+        }
+        drivebase.disablePID = false;
+        while (true) {
+            if (drivebase.toPosition()) {
+                break;
+            }
         }
     }
 
@@ -147,7 +158,7 @@ public class Path {
         return new Vector2d(p1.x + (p2.x - p1.x) * t, p1.y + (p2.y - p1.y) * t);
     }
 
-    // Maybe
+    // Maybe, prob not use
     private void runSegment() {
 
     }

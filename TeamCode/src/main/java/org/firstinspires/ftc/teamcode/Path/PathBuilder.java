@@ -108,7 +108,7 @@ public class PathBuilder {
         return this;
     }
 
-    // Set distance from point
+    // Distance = 1 in
     public PathBuilder actionAtPoint(Vector2d vector2d) {
         return this;
     }

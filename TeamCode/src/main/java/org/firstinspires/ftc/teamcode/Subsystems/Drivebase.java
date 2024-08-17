@@ -151,10 +151,9 @@ public class Drivebase {
     }
 
     public boolean reachedEnd() {
-        timesChecked = Math.sqrt(
-                Math.pow(currentPos.x - lastPos.x, 2) +
-                        Math.pow(currentPos.y - lastPos.y, 2)
-        ) < 0.01 && /*Math.sqrt(
+        timesChecked = currentPos.distance(lastPos) < 0.01 &&
+                //Math.sqrt(Math.pow(currentPos.x - lastPos.x, 2) + Math.pow(currentPos.y - lastPos.y, 2)) < 0.01 &&
+                /*Math.sqrt(
                 Math.pow(currentPos[0] - targetPos.x, 2) +
                 Math.pow(currentPos[1] - targetPos.y, 2)
                 ) < 1 &&*/
@@ -167,11 +166,12 @@ public class Drivebase {
     public boolean toPosition(Pose2d targetPos) {
         setTarget(targetPos);
 
-        double[] motorPowers = calculatePowers(currentPos, targetPos);
+        return toPosition();
+        //double[] motorPowers = calculatePowers(currentPos, targetPos);
 
-        runMotors(motorPowers);
+        //runMotors(motorPowers);
 
-        return reachedEnd(currentPos, targetPos);
+        //return reachedEnd(currentPos, targetPos);
     }
 
     public boolean toPosition() {
@@ -183,7 +183,7 @@ public class Drivebase {
     }
 
     public void setTarget(Pose2d target) {
-        targetPos = target;
+        targetPos.change(target);
     }
 }
 
