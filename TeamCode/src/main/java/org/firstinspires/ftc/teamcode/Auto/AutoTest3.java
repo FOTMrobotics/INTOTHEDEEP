@@ -18,6 +18,7 @@ public class AutoTest3 extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Drivebase drivebase = new Drivebase(hardwareMap);
+        /*
         Path path1 = new PathBuilder(drivebase, new Vector2d(0,0))
                 .pt(new Vector2d(0,0))
                 .pt(new Vector2d(0,0))
@@ -26,6 +27,7 @@ public class AutoTest3 extends LinearOpMode {
                 .build();
 
         path1.run();
+         */
         /*Pose2d[] points = {
                 new Pose2d(0,0,0),
                 new Pose2d(0,50,0),
@@ -33,10 +35,10 @@ public class AutoTest3 extends LinearOpMode {
                 new Pose2d(50,0,0),
                 new Pose2d(0,0,0)
         };*/
-        Pose2d[] points1 = {
-                new Pose2d(10,5,0),
-                new Pose2d(5,25,0)
-        };
+        //Pose2d[] points1 = {
+        //        new Pose2d(10,5,0),
+        //        new Pose2d(5,25,0)
+        //};
         //Path path1 = new Path(points);
         //Path path2 = new Path(points1);
         ElapsedTime timer = new ElapsedTime();
@@ -49,15 +51,27 @@ public class AutoTest3 extends LinearOpMode {
             //Path path3 = new Path(drivebase);
             //path3.add(point);
             if (gamepad1.b) {
-                Pose2d[] points = {
-                        new Pose2d(0,0,0),
-                        new Pose2d(0,distance,0),
-                        new Pose2d(distance, distance, 0),
-                        new Pose2d(distance,0,0),
-                        new Pose2d(0,0,0)
-                };
+                //Pose2d[] points = {
+                //        new Pose2d(0,0,0),
+                //        new Pose2d(0,distance,0),
+                //       new Pose2d(distance, distance, 0),
+                //        new Pose2d(distance,0,0),
+                //        new Pose2d(0,0,0)
+                //};
                 //Path path1 = new Path(points);
                 //path1.runPath(drivebase);
+                Path path1 = new PathBuilder(drivebase, new Vector2d(0,0))
+                        .setSpeed(15)
+                        .actionAtPoint(() -> {
+                            drivebase.runMotors(new double[] {0,0,0,0});
+                            sleep(10000);
+                            }, new Vector2d(0,15))
+                        .pt(new Vector2d(0,30))
+                        .pt(new Vector2d(15, 30))
+                        .pt(new Vector2d(15,0))
+                        .build();
+
+                path1.run();
                 bpress = true;
             } else if (gamepad1.y) {
                 //path2.runPath(drivebase);

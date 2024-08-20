@@ -104,10 +104,10 @@ public class Test1 extends LinearOpMode {
             //double backRightPower = (y + x - rx) / denominator / multiplier;
 
             motorPowers = new double[]{
-                    (y + x + rx) / multiplier,
-                    (y - x + rx) / multiplier,
-                    (y - x - rx) / multiplier,
-                    (y + x - rx) / multiplier
+                    (y + x + rx) / 1.2 / multiplier,
+                    (y - x + rx) / 1.2 / multiplier,
+                    (y - x - rx) / 1.2 / multiplier,
+                    (y + x - rx) / 1.2 / multiplier
             };
             drivebase.runMotors(motorPowers);
             //motorFrontLeft.setPower(frontLeftPower);

@@ -8,9 +8,19 @@ public class Vector2d {
         this.y = y;
     }
 
+    public Vector2d() {
+        this.x = Double.NaN;
+        this.y = Double.NaN;
+    }
+
     public void change(double x, double y) {
         this.x = x;
         this.y = y;
+    }
+
+    public void change(Vector2d vector2d) {
+        this.x = vector2d.x;
+        this.y = vector2d.y;
     }
 
     public double distance(Vector2d vector2d) {

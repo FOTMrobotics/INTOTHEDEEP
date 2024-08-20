@@ -25,7 +25,7 @@ public class Drivebase {
     public boolean disablePID = false;
     public double[] motorPowers;
     public Pose2d currentPos = new Pose2d(0,0,0);
-    public Pose2d targetPos;
+    public Pose2d targetPos = new Pose2d();
     private int timesChecked = 0;
     private final Pose2d lastPos = new Pose2d(0,0,0);
 
@@ -41,7 +41,7 @@ public class Drivebase {
 
     // Constraints
     public static double maxSpeed = 50; // in/s (Placeholder speed)
-    public static double speed = 30; // Speed it should travel at
+    public static double speed = 20; // Speed it should travel at
 
     public double t;
 

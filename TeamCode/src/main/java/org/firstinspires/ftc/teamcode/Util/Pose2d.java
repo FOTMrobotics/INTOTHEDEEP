@@ -3,6 +3,11 @@ package org.firstinspires.ftc.teamcode.Util;
 public class Pose2d extends Vector2d {
     public double h;
 
+    public Pose2d() {
+        super(Double.NaN, Double.NaN);
+        this.h = Double.NaN;
+    }
+
     public Pose2d(double x, double y, double h) {
         super(x, y);
         this.h = h;
