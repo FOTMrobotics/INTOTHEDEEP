@@ -4,9 +4,6 @@ import org.firstinspires.ftc.teamcode.Subsystems.Drivebase;
 import org.firstinspires.ftc.teamcode.Util.Pose2d;
 import org.firstinspires.ftc.teamcode.Util.Vector2d;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class PathBuilder {
     private Vector2d startPoint;
     private Path path;

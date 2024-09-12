@@ -5,10 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Subsystems.Drivebase;
 import org.firstinspires.ftc.teamcode.Path.Path;
 import org.firstinspires.ftc.teamcode.Path.PathBuilder;
-import org.firstinspires.ftc.teamcode.Util.Pose2d;
+import org.firstinspires.ftc.teamcode.Subsystems.Drivebase;
 import org.firstinspires.ftc.teamcode.Util.Vector2d;
 
 @Config

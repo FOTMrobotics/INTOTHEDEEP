@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Subsystems.SparkFunOTOS;
+import org.firstinspires.ftc.teamcode.Test.Util.Pose2D;
 
 @TeleOp
 public class JoystickTest extends LinearOpMode {
@@ -23,7 +24,7 @@ public class JoystickTest extends LinearOpMode {
         if (isStopRequested()) return;
 
         while (opModeIsActive()) {
-            SparkFunOTOS.Pose2D pos = myOtos.getPosition();
+            Pose2D pos = myOtos.getPosition();
 
             if (gamepad1.y) {
                 myOtos.resetTracking();
@@ -104,7 +105,7 @@ public class JoystickTest extends LinearOpMode {
         // clockwise (negative rotation) from the robot's orientation, the offset
         // would be {-5, 10, -90}. These can be any value, even the angle can be
         // tweaked slightly to compensate for imperfect mounting (eg. 1.3 degrees).
-        SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(0, 0, 0);
+        Pose2D offset = new Pose2D(0, 0, 0);
         myOtos.setOffset(offset);
 
         // Here we can set the linear and angular scalars, which can compensate for
@@ -146,7 +147,7 @@ public class JoystickTest extends LinearOpMode {
         // the origin. If your robot does not start at the origin, or you have
         // another source of location information (eg. vision odometry), you can set
         // the OTOS location to match and it will continue to track from there.
-        SparkFunOTOS.Pose2D currentPosition = new SparkFunOTOS.Pose2D(0, 0, 0);
+        Pose2D currentPosition = new Pose2D(0, 0, 0);
         myOtos.setPosition(currentPosition);
 
         // Get the hardware and firmware version

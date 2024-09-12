@@ -3,11 +3,8 @@ package org.firstinspires.ftc.teamcode.Path;
 import static java.lang.Double.isNaN;
 import static java.lang.Double.max;
 
-import android.util.Pair;
-
 import com.acmerobotics.dashboard.config.Config;
 
-import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode.Subsystems.Drivebase;
 import org.firstinspires.ftc.teamcode.Util.Pose2d;
 import org.firstinspires.ftc.teamcode.Util.Vector2d;

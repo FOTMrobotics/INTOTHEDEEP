@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Test.Util.Pose2D;
 import org.firstinspires.ftc.teamcode.Util.PIDcontrol;
 import org.firstinspires.ftc.teamcode.Util.Pose2d;
 
@@ -58,12 +59,12 @@ public class Drivebase {
         myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
         myOtos.setLinearUnit(SparkFunOTOS.LinearUnit.INCHES);
         myOtos.setAngularUnit(SparkFunOTOS.AngularUnit.DEGREES);
-        myOtos.setOffset(new SparkFunOTOS.Pose2D(-3.75, 0, 0));
+        myOtos.setOffset(new Pose2D(-3.75, 0, 0));
         myOtos.setLinearScalar(1.0);
         myOtos.setAngularScalar(1.0);
         myOtos.calibrateImu();
         myOtos.resetTracking();
-        SparkFunOTOS.Pose2D currentPosition = new SparkFunOTOS.Pose2D(0, 0, 0);
+        Pose2D currentPosition = new Pose2D(0, 0, 0);
         myOtos.setPosition(currentPosition);
 
         FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -74,7 +75,7 @@ public class Drivebase {
     }
 
     public void update() {
-        SparkFunOTOS.Pose2D pos = myOtos.getPosition();
+        Pose2D pos = myOtos.getPosition();
         currentPos.change(pos.x, pos.y, pos.h);
         velocity = Math.sqrt(Math.pow(currentPos.x - lastPos.x, 2) + Math.pow(currentPos.y - lastPos.y, 2)) / ((double) Math.round(timer.seconds() * 100) / 100);
         TelemetryPacket packet = new TelemetryPacket();
@@ -90,7 +91,7 @@ public class Drivebase {
     }
 
     public double[] getPos() {
-        SparkFunOTOS.Pose2D pos = myOtos.getPosition();
+        Pose2D pos = myOtos.getPosition();
         return new double[] {pos.x, pos.y, pos.h};
     }
 

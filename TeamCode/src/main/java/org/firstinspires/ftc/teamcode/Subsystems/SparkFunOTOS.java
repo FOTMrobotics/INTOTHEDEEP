@@ -5,14 +5,16 @@
 */
 package org.firstinspires.ftc.teamcode.Subsystems;
 
-import java.nio.ByteBuffer;
-import java.util.Arrays;
-
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchDevice;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchSimple;
 import com.qualcomm.robotcore.hardware.configuration.annotations.DeviceProperties;
 import com.qualcomm.robotcore.hardware.configuration.annotations.I2cDeviceType;
+
+import org.firstinspires.ftc.teamcode.Test.Util.Pose2D;
+
+import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 /**
  * {@link SparkFunOTOS} is the Java driver for the SparkFun Qwiic Optical Tracking Odometry Sensor
@@ -134,33 +136,6 @@ public class SparkFunOTOS extends I2cDeviceSynchDevice {
     // resolution of about 0.096 rps^2 (5.5 dps^2)
     protected static final double RPSS_TO_INT16 = 32768.0 / (Math.PI * 1000.0);
     protected static final double INT16_TO_RPSS = 1.0 / RPSS_TO_INT16;
-
-    // 2D pose structure, including x and y coordinates and heading angle.
-    // Although pose is traditionally used for position and orientation, this
-    // structure is also used for velocity and accleration by the OTOS driver
-    public static class Pose2D {
-        public double x;
-        public double y;
-        public double h;
-
-        public Pose2D() {
-            x = 0.0;
-            y = 0.0;
-            h = 0.0;
-        }
-
-        public Pose2D(double x, double y, double h) {
-            this.x = x;
-            this.y = y;
-            this.h = h;
-        }
-
-        public void set(Pose2D pose) {
-            this.x = pose.x;
-            this.y = pose.y;
-            this.h = pose.h;
-        }
-    }
 
     // Version register structure
     public static class Version {

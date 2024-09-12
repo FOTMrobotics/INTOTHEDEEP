@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Subsystems.SparkFunOTOS;
+import org.firstinspires.ftc.teamcode.Test.Util.Pose2D;
 
 @Config
 @Autonomous
@@ -36,7 +37,7 @@ public class AutoTest extends LinearOpMode {
 
         configureOtos();
 
-        myOtos.setOffset(new SparkFunOTOS.Pose2D(x_offset, y_offset, 0));
+        myOtos.setOffset(new Pose2D(x_offset, y_offset, 0));
 
         DcMotor motorFrontLeft = hardwareMap.dcMotor.get("frontLeft");
         DcMotor motorFrontRight = hardwareMap.dcMotor.get("frontRight");
@@ -63,7 +64,7 @@ public class AutoTest extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            SparkFunOTOS.Pose2D pos = myOtos.getPosition();
+            Pose2D pos = myOtos.getPosition();
 
             TelemetryPacket packet = new TelemetryPacket();
             Canvas fieldOverlay = packet.fieldOverlay();
@@ -183,13 +184,13 @@ public class AutoTest extends LinearOpMode {
 
         myOtos.setLinearUnit(SparkFunOTOS.LinearUnit.INCHES);
         myOtos.setAngularUnit(SparkFunOTOS.AngularUnit.DEGREES);
-        SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(0, 0, 0);
+        Pose2D offset = new Pose2D(0, 0, 0);
         myOtos.setOffset(offset);
         myOtos.setLinearScalar(1.0);
         myOtos.setAngularScalar(1.0);
         myOtos.calibrateImu();
         myOtos.resetTracking();
-        SparkFunOTOS.Pose2D currentPosition = new SparkFunOTOS.Pose2D(0, 0, 0);
+        Pose2D currentPosition = new Pose2D(0, 0, 0);
         myOtos.setPosition(currentPosition);
 
         SparkFunOTOS.Version hwVersion = new SparkFunOTOS.Version();
