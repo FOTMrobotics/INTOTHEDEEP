@@ -13,9 +13,17 @@ public class Auto extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(this.hardwareMap);
         waitForStart();
         while (opModeIsActive()) {
-            boolean z = this.gamepad1.b;
-            Path path1 = drive.pathBuilder(new Vector2D(0,0))
-                    .build();
+            boolean bPressed = this.gamepad1.b;
+            if (bPressed) {
+                Path path1 = drive.pathBuilder(new Vector2D(0, 0))
+                        .pt(0,90)
+                        .pt(90,90)
+                        .pt(90,0)
+                        .pt(0,0)
+                        .build();
+
+                path1.runTest();
+            }
         }
     }
 }

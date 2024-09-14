@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.Test.Path;
 
+import org.checkerframework.checker.units.qual.A;
 import org.firstinspires.ftc.teamcode.Test.Drivebase.MecanumDrive;
+import org.firstinspires.ftc.teamcode.Test.Util.Pose2D;
 import org.firstinspires.ftc.teamcode.Test.Util.Vector2D;
 
 import java.util.ArrayList;
@@ -20,6 +22,44 @@ public class Path {
 
     public Path (MecanumDrive mecanumDrive) {
         this.mecanumDrive = mecanumDrive;
+    }
+
+    public List<Vector2D> pathPoints = new ArrayList<>();
+    public Path (MecanumDrive mecanumDrive, List<Vector2D> pathPoints) {
+        this.mecanumDrive = mecanumDrive;
+        this.pathPoints = pathPoints;
+
+    }
+
+    public void runTest () {
+        //while (true) {
+            //mecanumDrive.toTarget(new Pose2D(0, 20, 0));
+        //}
+        for (int i = 0 ; i < this.pathPoints.size() - 1 ; i++)
+        {
+            while (true)
+            {
+                Vector2D A = this.pathPoints.get(i);
+                Vector2D B = this.pathPoints.get(i + 1);
+                Pose2D C = mecanumDrive.getPosition();
+
+                Vector2D AB = A.sub(B);
+                Vector2D CB = C.sub(B);
+
+                if (CB.magnitude() < 5) {
+                    break;
+                }
+
+                Vector2D D = CB.proj(AB).add(B);
+
+                Vector2D DC = C.sub(D).scale(1); // Scale is how much the robot should adjust to line. Maybe add PID loop to this.
+
+                Vector2D targetPoint = C.sub(DC.add(CB));
+
+                mecanumDrive.toTarget(new Pose2D(targetPoint, 0));
+            }
+        }
+        while (!mecanumDrive.atTarget()) {mecanumDrive.toTarget();}
     }
 
     public void run () {

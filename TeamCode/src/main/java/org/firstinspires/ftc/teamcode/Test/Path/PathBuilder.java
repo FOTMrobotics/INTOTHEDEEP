@@ -93,9 +93,9 @@ public class PathBuilder {
         }
         controlPoints.add(controlPoints.get(controlPoints.size() - 1));
 
-        List<Vector2D> splinePoints = catmullRomChain(controlPoints);
+        List<Vector2D> pathPoints = catmullRomChain(controlPoints);
 
-        return new Path(mecanumDrive);
+        return new Path(mecanumDrive, pathPoints);
     }
 
     public List<Vector2D> catmullRomSpline (Vector2D p0, Vector2D p1, Vector2D p2, Vector2D p3, double numPoints) {
@@ -120,7 +120,7 @@ public class PathBuilder {
         double pointsPerSegment = 10;
 
         List<Vector2D> splinePoints = new ArrayList<>();
-        for (int i = 0 ; i <= points.size() - 3; i++)
+        for (int i = 0 ; i <= points.size() - 4; i++)
         {
             Vector2D p0 = points.get(i);
             Vector2D p1 = points.get(i+1);

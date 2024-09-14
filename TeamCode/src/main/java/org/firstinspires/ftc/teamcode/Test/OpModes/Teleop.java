@@ -19,7 +19,7 @@ public class Teleop extends LinearOpMode {
             this.telemetry.addData("y", Double.valueOf(controls[1]));
             this.telemetry.addData("r", Double.valueOf(controls[2]));
             this.telemetry.update();
-            if (this.gamepad1.left_trigger <= 0.5d) {
+            if (this.gamepad1.left_trigger >= 0.5) {
                 mecanumDrive.mecanumDrive(controls);
             } else {
                 mecanumDrive.trueNorthDrive(controls);

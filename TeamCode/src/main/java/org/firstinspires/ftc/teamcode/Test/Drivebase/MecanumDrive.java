@@ -59,6 +59,11 @@ public class MecanumDrive {
 
     public void updatePosition () {this.currentPos.set(this.OTOS.getPosition());}
 
+    public Pose2D getPosition () {
+        updatePosition();
+        return this.currentPos;
+    }
+
     public void setMotors (String[] motorNames) {
         for (int i = 0; i <= 3; i++) {
             this.motors.add(this.hardwareMap.get(DcMotor.class, motorNames[i]));
@@ -74,26 +79,34 @@ public class MecanumDrive {
     public double[] powersToTarget () {
         updatePosition();
 
-        Vector2D difference = this.currentPos.sub(this.targetPos);
+        Vector2D difference = currentPos.sub(targetPos);
 
-        double angle = (Math.toDegrees(Math.atan2(difference.x, difference.y)) + 90) - this.currentPos.h;
+        //double xDist = currentPos.x - targetPos.x;
+        //double yDist = currentPos.y - targetPos.y;
+
+        double angle = Math.toDegrees(Math.atan2(difference.y, difference.x)) + 90;
+        //double angle = Math.toDegrees(Math.atan2(yDist, xDist)) + 90;
         angle = angle <= 180 ? angle : angle - 360;
+        angle = angle - currentPos.h;
+        //angle = angle <= 180 ? angle : angle - 360;
 
-        double headingError = this.targetPos.h - this.currentPos.h;
+        double headingError = targetPos.h - currentPos.h;
         headingError = headingError > 180 ? headingError - 360 : headingError < -180 ? headingError - 360 : headingError;
 
         double out;
-        if (this.disablePID) {
-            out = this.positionPID.getOutput(difference.magnitude());
+        if (!disablePID) {
+            //difference.magnitude()
+            out = positionPID.getOutput(difference.magnitude());
+            //out = positionPID.getOutput(Math.sqrt(Math.pow(xDist, 2) + Math.pow(yDist, 2)));
         } else {
             out = 1;
         }
-        double headingOut = this.headingPID.getOutput(headingError);
+        double headingOut = headingPID.getOutput(headingError);
 
         double power = Math.min(out, 1);
         double x = Math.sin(Math.toRadians(angle)) * power;
-        double y = (-Math.cos(Math.toRadians(angle))) * power;
-        double r = ((Boolean.compare(headingError > 0, false) * -2) + 1) * Math.min(Math.abs(headingOut), 1);
+        double y = -Math.cos(Math.toRadians(angle)) * power;
+        double r = (1 + (Boolean.compare(headingError > 0, false) * -2)) * Math.min(Math.abs(headingOut),1);
         return new double[] {
                 (y + x + r) * 1,
                 (y - x - r) * 1,
@@ -116,8 +129,21 @@ public class MecanumDrive {
         toTarget();
     }
 
+    public int timesChecked;
+    public Pose2D lastPos = new Pose2D();
+
     public boolean atTarget () {
-        return true;
+        timesChecked = Math.sqrt(
+                Math.pow(currentPos.x - lastPos.x, 2) +
+                Math.pow(currentPos.y - lastPos.y, 2)
+                ) < 0.01 && /*Math.sqrt(
+                Math.pow(currentPos[0] - targetPos.x, 2) +
+                Math.pow(currentPos[1] - targetPos.y, 2)
+                ) < 1 &&*/
+                Math.abs(currentPos.h - lastPos.h) < 0.01 ?
+                timesChecked + 1 : 0;
+        lastPos.set(currentPos);
+        return timesChecked > 5;
     }
 
     public PathBuilder pathBuilder (Vector2D startPoint) {
