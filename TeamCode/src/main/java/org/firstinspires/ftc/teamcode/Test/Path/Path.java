@@ -1,7 +1,12 @@
 package org.firstinspires.ftc.teamcode.Test.Path;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+
 import org.checkerframework.checker.units.qual.A;
 import org.firstinspires.ftc.teamcode.Test.Drivebase.MecanumDrive;
+import org.firstinspires.ftc.teamcode.Test.Util.PIDcontrol;
 import org.firstinspires.ftc.teamcode.Test.Util.Pose2D;
 import org.firstinspires.ftc.teamcode.Test.Util.Vector2D;
 
@@ -11,7 +16,9 @@ import java.util.List;
 /**
  * @author Preston Cokis
  */
+@Config
 public class Path {
+    public static double p = 3;
     public MecanumDrive mecanumDrive;
     public List<PathSegment> pathSegments = new ArrayList();
 
@@ -32,6 +39,10 @@ public class Path {
     }
 
     public void runTest () {
+        PIDcontrol PID = new PIDcontrol(p,0,0);
+
+        FtcDashboard dashboard  = FtcDashboard.getInstance();
+        dashboard.setTelemetryTransmissionInterval(25);
         //while (true) {
             //mecanumDrive.toTarget(new Pose2D(0, 20, 0));
         //}
@@ -39,20 +50,33 @@ public class Path {
         {
             while (true)
             {
-                Vector2D A = this.pathPoints.get(i);
-                Vector2D B = this.pathPoints.get(i + 1);
-                Pose2D C = mecanumDrive.getPosition();
+                Vector2D A = this.pathPoints.get(i); // Start
+                Vector2D B = this.pathPoints.get(i + 1); // End
+                Pose2D C = mecanumDrive.getPosition(); // Robot Position
 
                 Vector2D AB = A.sub(B);
                 Vector2D CB = C.sub(B);
 
-                if (CB.magnitude() < 5) {
+                //if (CB.magnitude() < 5) {
+                    //break;
+                //}
+
+                Vector2D D = CB.proj(AB).add(B); // Point on line closest to robot's position
+
+                Vector2D BD = B.sub(D);
+                if (BD.magnitude() < 5) {
                     break;
                 }
 
-                Vector2D D = CB.proj(AB).add(B);
+                Vector2D DC = C.sub(D);
 
-                Vector2D DC = C.sub(D).scale(1); // Scale is how much the robot should adjust to line. Maybe add PID loop to this.
+                TelemetryPacket packet = new TelemetryPacket();
+                packet.put("distFromLine", DC.magnitude());
+                double output = PID.getOutput(DC.magnitude());
+                packet.put("output", output);
+                dashboard.sendTelemetryPacket(packet);
+
+                DC.scale(output); // Scale for how much the robot should adjust to line.
 
                 Vector2D targetPoint = C.sub(DC.add(CB));
 
