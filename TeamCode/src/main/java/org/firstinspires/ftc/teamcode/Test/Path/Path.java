@@ -20,7 +20,8 @@ import java.util.List;
 public class Path {
     public static double p = 3;
     public MecanumDrive mecanumDrive;
-    public List<PathSegment> pathSegments = new ArrayList();
+
+    public List<PathSegment> pathSegments = new ArrayList<>();
 
     enum type {
         point,
@@ -38,14 +39,12 @@ public class Path {
 
     }
 
-    public void runTest () {
+    public void run () {
         PIDcontrol PID = new PIDcontrol(p,0,0);
 
         FtcDashboard dashboard  = FtcDashboard.getInstance();
         dashboard.setTelemetryTransmissionInterval(25);
-        //while (true) {
-            //mecanumDrive.toTarget(new Pose2D(0, 20, 0));
-        //}
+
         for (int i = 0 ; i < this.pathPoints.size() - 1 ; i++)
         {
             while (true)
@@ -64,6 +63,7 @@ public class Path {
                 Vector2D D = CB.proj(AB).add(B); // Point on line closest to robot's position
 
                 Vector2D BD = B.sub(D);
+                // Goes to next point when in radius
                 if (BD.magnitude() < 5) {
                     break;
                 }
@@ -84,10 +84,6 @@ public class Path {
             }
         }
         while (!mecanumDrive.atTarget()) {mecanumDrive.toTarget();}
-    }
-
-    public void run () {
-
     }
 
     public Vector2D lerp (Vector2D p1, Vector2D p2, double t) {

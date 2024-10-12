@@ -22,7 +22,7 @@ public class Auto extends LinearOpMode {
                         .pt(0,0)
                         .build();
 
-                path1.runTest();
+                path1.run();
             }
         }
     }

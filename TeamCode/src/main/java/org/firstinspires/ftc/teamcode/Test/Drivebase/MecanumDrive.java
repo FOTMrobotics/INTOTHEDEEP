@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Test.Drivebase;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Subsystems.SparkFunOTOS;
@@ -39,9 +40,9 @@ public class MecanumDrive {
     public MecanumDrive(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
         setMotors(this.motorNames);
-        this.motors.get(0).setDirection(DcMotorSimple.Direction.REVERSE);
+        this.motors.get(1).setDirection(DcMotorSimple.Direction.REVERSE);
         this.motors.get(2).setDirection(DcMotorSimple.Direction.REVERSE);
-        setSparkFunOTOS("sensor_otos");
+        setSparkFunOTOS("otos");
     }
 
     public void setSparkFunOTOS(String deviceName) {
@@ -81,23 +82,16 @@ public class MecanumDrive {
 
         Vector2D difference = currentPos.sub(targetPos);
 
-        //double xDist = currentPos.x - targetPos.x;
-        //double yDist = currentPos.y - targetPos.y;
-
         double angle = Math.toDegrees(Math.atan2(difference.y, difference.x)) + 90;
-        //double angle = Math.toDegrees(Math.atan2(yDist, xDist)) + 90;
         angle = angle <= 180 ? angle : angle - 360;
         angle = angle - currentPos.h;
-        //angle = angle <= 180 ? angle : angle - 360;
 
         double headingError = targetPos.h - currentPos.h;
         headingError = headingError > 180 ? headingError - 360 : headingError < -180 ? headingError - 360 : headingError;
 
         double out;
         if (!disablePID) {
-            //difference.magnitude()
             out = positionPID.getOutput(difference.magnitude());
-            //out = positionPID.getOutput(Math.sqrt(Math.pow(xDist, 2) + Math.pow(yDist, 2)));
         } else {
             out = 1;
         }
@@ -150,10 +144,15 @@ public class MecanumDrive {
         return new PathBuilder(this, startPoint);
     }
 
-    public void mecanumDrive (double[] gamepadControls) {
-        double x = gamepadControls[0];
-        double y = -gamepadControls[1];
-        double r = gamepadControls[2];
+    public void mecanumDrive (Gamepad gamepad) {
+        //double x = gamepad.left_stick_x;
+        //double y = -gamepad.left_stick_y;
+        //double r = gamepad.right_stick_x;
+
+        // kaden's funky control scheme
+        double x = gamepad.left_stick_x;
+        double y = -gamepad.right_stick_y;
+        double r = gamepad.right_stick_x;
 
         runMotors(new double[] {
                 y + x + r,
@@ -163,12 +162,12 @@ public class MecanumDrive {
         });
     }
 
-    public void trueNorthDrive (double[] gamepadControls) {
+    public void trueNorthDrive (Gamepad gamepad) {
         updatePosition();
 
-        double x = gamepadControls[0];
-        double y = -gamepadControls[1];
-        double r = gamepadControls[2];
+        double x = gamepad.left_stick_x;
+        double y = -gamepad.left_stick_y;
+        double r = gamepad.right_stick_x;
 
         double power = Math.sqrt(Math.pow(x, 2.0d) + Math.pow(y, 2.0d));
 

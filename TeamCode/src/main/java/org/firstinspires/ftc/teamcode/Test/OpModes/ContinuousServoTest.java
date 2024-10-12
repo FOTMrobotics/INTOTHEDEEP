@@ -2,22 +2,26 @@ package org.firstinspires.ftc.teamcode.Test.OpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
-import org.firstinspires.ftc.teamcode.Test.Drivebase.MecanumDrive;
+import com.qualcomm.robotcore.hardware.CRServo;
 
 @TeleOp
-public class Teleop extends LinearOpMode {
+public class ContinuousServoTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
-        MecanumDrive mecanumDrive = new MecanumDrive(hardwareMap);
+        CRServo servo = hardwareMap.crservo.get("servo");
+
         waitForStart();
+
         if (isStopRequested()) {
             return;
         }
+
         while (opModeIsActive()) {
-            if (gamepad1.left_trigger >= 0.5) {
-                mecanumDrive.mecanumDrive(gamepad1);
+            if (gamepad1.b) {
+                servo.setPower(1);
+            } else if (gamepad1.a) {
+                servo.setPower(-1);
             } else {
-                mecanumDrive.trueNorthDrive(gamepad1);
+                servo.setPower(0);
             }
         }
     }
