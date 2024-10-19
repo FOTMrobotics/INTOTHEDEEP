@@ -59,7 +59,7 @@ public class Intake {
     }
 
     public void pivotIn () {
-        pivot.setPosition(0.45);
+        pivot.setPosition(0.35);
     }
 
     public void update (HorizontalExtension extension, VerticalExtension lift, Gamepad gamepad) {
