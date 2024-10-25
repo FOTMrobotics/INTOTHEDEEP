@@ -21,21 +21,24 @@ fun slerpDeriv2 (t: Double, p0: Vector2D, p1: Vector2D, p2: Vector2D, p3: Vector
 fun curvature (d1: Vector2D, d2: Vector2D)
     = (d1 x d2) / d1.norm().pow(3)
 
-// TODO: Needs testing
 fun distance (p1: Vector2D, p0: Vector2D)
     = (p1 - p0).norm().pow(2)
 
-// TODO: Needs testing
 fun distanceDeriv (p1: Vector2D, p0: Vector2D, dp1: Vector2D)
     = ((p1 - p0) * 2.0) dot dp1
 
-// TODO: Needs testing
-fun distanceDeriv2 (p1: Vector2D, p0: Vector2D, dp1: Vector2D, ddp1: Vector2D)
-    = ((dp1 dot dp1) + ((p1 - p0) dot ddp1)) * 2.0
+//fun distanceDeriv2 (p1: Vector2D, p0: Vector2D, dp1: Vector2D, ddp1: Vector2D)
+    //= 2 * ((ddp1 dot (p1 - p0)) + (dp1 dot dp1))
 
-fun closestPoint (pos: Vector2D, p0: Vector2D, p1: Vector2D, p2: Vector2D, p3: Vector2D): Double {
-    val maxIteration = 1000
-    val tolerance = 1e-8
+fun distanceDeriv2 (t: Double, p0: Vector2D, p1: Vector2D, p2: Vector2D, p3: Vector2D, pos: Vector2D): Double {
+    val h = 1e-4
+    return (distanceDeriv(slerp(t+h, p0, p1, p2, p3), pos, slerpDeriv(t+h, p0, p1, p2 ,p3)) -
+            distanceDeriv(slerp(t, p0, p1, p2, p3), pos, slerpDeriv(t, p0, p1, p2, p3))) / h
+}
+
+fun closestPoint (pos: Vector2D, p0: Vector2D, p1: Vector2D, p2: Vector2D, p3: Vector2D, maxIteration: Int = 1000, tolerance: Double = 1e-6): Double {
+    //val maxIteration = 1000
+    //val tolerance = 1e-6
     var t = 0.5
 
     var splinePoint = Vector2D(Double.NaN, Double.NaN)
@@ -47,15 +50,14 @@ fun closestPoint (pos: Vector2D, p0: Vector2D, p1: Vector2D, p2: Vector2D, p3: V
         splineDeriv = slerpDeriv(t, p0, p1, p2, p3)
         splineDeriv2 = slerpDeriv2(t, p0, p1, p2, p3)
 
-        if (splinePoint == pos) {break}
-
         val df = distanceDeriv(splinePoint, pos, splineDeriv)
-        val ddf = distanceDeriv2(splinePoint, pos, splineDeriv, splineDeriv2)
-
-        if (abs(df) < tolerance) {break}
+        val ddf = distanceDeriv2(t, p0, p1, p2, p3, pos)
 
         t -= df / ddf
         t = min(max(t, 0.0), 1.0)
+
+        if (splinePoint == pos) {break}
+        if (abs(df) < tolerance) {break}
     }
 
     return t
@@ -72,8 +74,10 @@ fun closestPointTest (pos: Vector2D, p0: Vector2D, p1: Vector2D, p2: Vector2D, p
 
     splinePoint = slerp(t, p0, p1, p2, p3)
     splineDeriv = slerpDeriv(t, p0, p1, p2, p3)
+    splineDeriv2 = slerpDeriv2(t, p0, p1, p2, p3)
     val df = distanceDeriv(splinePoint, pos, splineDeriv)
-    val ddf = distanceDeriv2(splinePoint, pos, splineDeriv, splineDeriv2)
+    //val ddf = distanceDeriv2(splinePoint, pos, splineDeriv, splineDeriv2)
+    val ddf = distanceDeriv2(t, p0, p1, p2, p3, pos)
     /*
     for (i in 1..maxIteration) {
         splinePoint = slerp(t, p0, p1, p2, p3)

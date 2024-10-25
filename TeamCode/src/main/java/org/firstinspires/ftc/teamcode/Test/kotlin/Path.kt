@@ -4,21 +4,23 @@ import org.firstinspires.ftc.teamcode.Test.kotlin.Pose2D
 import org.firstinspires.ftc.teamcode.Test.kotlin.Spline
 import org.firstinspires.ftc.teamcode.Test.kotlin.curvature
 
-fun driveVector (spline: Spline, pos: Pose2D): Pose2D {
+fun driveVector (spline: Spline, pos: Pose2D, pidf: PIDF): Pose2D {
     val t = spline.getClosestPoint(pos)
 
     val splinePoint = spline.getPoint(t)
     val splineDeriv = spline.getDeriv(t)
     val splineDeriv2 = spline.getDeriv2(t)
 
-    val translation = splinePoint - pos
+    val distance = splinePoint - pos
+    val output = pidf.update(distance.norm())
+    val translation = distance * output
 
     val forward = splineDeriv
 
     val curvature = curvature(splineDeriv, splineDeriv2)
     val centripetal = forward.pow(2) * curvature
 
-    val drive = translation + forward + centripetal
+    val drive = forward + translation + centripetal
 
     return Pose2D(drive.x, drive.y, 0.0)
 }

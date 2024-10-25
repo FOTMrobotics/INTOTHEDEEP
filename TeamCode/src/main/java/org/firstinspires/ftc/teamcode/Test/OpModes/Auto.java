@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Test.OpModes;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.Subsystems.Bucket;
 import org.firstinspires.ftc.teamcode.Test.Drivebase.MecanumDrive;
 import org.firstinspires.ftc.teamcode.Test.Path.Path;
 import org.firstinspires.ftc.teamcode.Test.Util.Vector2D;
@@ -11,6 +12,7 @@ import org.firstinspires.ftc.teamcode.Test.Util.Vector2D;
 public class Auto extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         MecanumDrive drive = new MecanumDrive(this.hardwareMap);
+        Bucket bucket = new Bucket(hardwareMap);
         waitForStart();
         while (opModeIsActive()) {
             boolean bPressed = this.gamepad1.b;

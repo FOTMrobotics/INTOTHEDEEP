@@ -16,7 +16,7 @@ open class Vector2D (var x: Double, var y: Double) {
 
     operator fun times(value: Double) = Vector2D(x * value, y * value)
 
-    //operator fun times(v: Vector2D) = Vector2D(x * v.x, y * v.y)
+    operator fun times(v: Vector2D) = Vector2D(x * v.x, y * v.y)
 
     operator fun div(value: Double) = Vector2D(x / value, y / value)
 
