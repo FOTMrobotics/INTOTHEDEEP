@@ -1,11 +1,10 @@
-package org.firstinspires.ftc.teamcode.TeleOp;
+package org.firstinspires.ftc.teamcode.Subsystems;
 
 import static java.lang.Double.isNaN;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Subsystems.SparkFunOTOS;
 import org.firstinspires.ftc.teamcode.Test.Util.Pose2D;
 
 @TeleOp
