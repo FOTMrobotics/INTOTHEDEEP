@@ -4,86 +4,68 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Test.Util.PDFLcontrol;
 
 public class HorizontalExtension {
-    private DcMotor extension;
+    private Servo extension1, extension2;
     private PDFLcontrol PDFL = new PDFLcontrol(0.01, 0, 0, 0);
-    private boolean breakExtension = true;
-    public int target;
 
-    public final static int MAX = 1500;
+    public double pos = ZERO;
 
-    public HorizontalExtension (HardwareMap hardwareMap) {
-        extension = hardwareMap.get(DcMotor.class, "extension");
+    public final static double ZERO = 0.46;
+    public final static double OUT = 0.46; // TODO: Change placeholder
+    public final static double MAX = 1;
 
-        extension.setDirection(DcMotorSimple.Direction.REVERSE);
+    public final static double SCALE = 0.1;
 
-        extension.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    public HorizontalExtension(HardwareMap hardwareMap) {
+        extension1 = hardwareMap.get(Servo.class, "extension1");
+        extension2 = hardwareMap.get(Servo.class, "extension2");
+
+        //extension1.scaleRange(ZERO, 1);
+        //extension2.scaleRange(ZERO, 1);
+
+        setPosition(ZERO);
     }
 
-    public void resetEncoders () {
-        extension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        extension.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    public void setPosition(double pos) {
+        extension1.setPosition(pos);
+        extension2.setPosition(pos);
+        this.pos = pos;
     }
 
-    public void zero () {
-        toTarget(0);
-        if (extension.getCurrentPosition() < 0) {
-            resetEncoders();
-        }
+    public void zero() {
+        setPosition(ZERO);
     }
 
-    public void max () {
-        toTarget(MAX);
+    public void out() {
+        setPosition(OUT);
     }
 
-    public void setPower (double power) {
-        extension.setPower(power);
+    public void max() {
+        setPosition(MAX);
     }
 
-    public void toTarget () {
-        double error = target - extension.getCurrentPosition();
-        setPower(PDFL.update(error));
-    }
-
-    public void toTarget (int target) {
-        setTarget(target);
-        toTarget();
-    }
-
-    public void setTarget (int target) {
-        this.target = target;
+    public double lerp(double t) {
+        return OUT + t * (MAX - OUT);
     }
 
     /**
      * Use for TeleOp
      */
     public void update (Gamepad gamepad) {
-        //double power = out - in;
         double power = gamepad.right_stick_x;
 
-        if (extension.getCurrentPosition() <= 50 && power <= 0) {
+        if (pos == ZERO && power > 0) {
+            out();
+        } else if (pos <= OUT && power < 0) {
             zero();
-        } else if (extension.getCurrentPosition() >= MAX - 50 && power >= 0) {
-            max();
-        } else if (power != 0) {
-            setPower(power);
-            breakExtension = false;
-        } else if (!breakExtension) {
-            setTarget(extension.getCurrentPosition());
-            breakExtension = true;
-        } else {
-            toTarget();
+        } else if (pos > OUT && Math.abs(power) > 0) {
+            pos += power * SCALE;
+            pos = Math.max(Math.min(OUT, pos), 1);
+            setPosition(pos);
         }
-    }
-
-    public double getTarget () {
-        return target;
-    }
-
-    public double getEncoder () {
-        return extension.getCurrentPosition();
     }
 }

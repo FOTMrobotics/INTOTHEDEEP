@@ -24,16 +24,6 @@ public class Bucket {
     }
 
     public void update (VerticalExtension lift, Gamepad gamepad) {
-        //if (!liftLow) {
-            //open = false;
-        //}
-
-        //liftLow = lift.getEncoderL() < 100;
-
-        //if (!pressed) {
-            //open = !open;
-        //}
-
         pressed = gamepad.left_bumper || gamepad.right_bumper;
 
         if (pressed) {

@@ -52,10 +52,15 @@ public class MecanumDrive {
         this.OTOS.setAngularUnit(SparkFunOTOS.AngularUnit.DEGREES);
         this.OTOS.setLinearScalar(1.0d);
         this.OTOS.setAngularScalar(1.0d);
-        this.OTOS.setOffset(new Pose2D(-3.75d, 0.0d, 0.0d));
+        this.OTOS.setOffset(new Pose2D(7.0d, 0.0d, 0.0d));
         this.OTOS.calibrateImu();
         this.OTOS.resetTracking();
         this.OTOS.setPosition(new Pose2D(0.0d, 0.0d, 0.0d));
+    }
+
+    public void resetSparkFunOTOS() {
+        this.OTOS.calibrateImu();
+        this.OTOS.resetTracking();
     }
 
     public void updatePosition () {this.currentPos.set(this.OTOS.getPosition());}
@@ -150,8 +155,8 @@ public class MecanumDrive {
         //double r = gamepad.right_stick_x;
 
         // kaden's funky control scheme
-        double x = gamepad.left_stick_x;
-        double y = -gamepad.right_stick_y;
+        double x = -gamepad.left_stick_x;
+        double y = gamepad.right_stick_y;
         double r = gamepad.right_stick_x;
 
         runMotors(new double[] {

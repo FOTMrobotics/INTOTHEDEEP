@@ -32,7 +32,7 @@ public class Intake {
 
     public void in () {
         setWheels(1);
-        roller.setPower(0.5);
+        roller.setPower(1);
     }
 
     public void out () {
@@ -51,20 +51,19 @@ public class Intake {
     }
 
     public void pivotOut () {
-        pivot.setPosition(1);
+        pivot.setPosition(1); // TODO: Change
     }
 
     public void pivotAwait () {
-        pivot.setPosition(0.75);
+        pivot.setPosition(0.75); // TODO: Change
     }
 
     public void pivotIn () {
-        pivot.setPosition(0.35);
+        pivot.setPosition(0);
     }
 
     public void update (HorizontalExtension extension, VerticalExtension lift, Gamepad gamepad) {
-        // Position 900 is when it should swap.
-        if (extension.getEncoder() < 400) {
+        if (extension.pos <= HorizontalExtension.OUT) {
             pivotIn();
         } else if (!gamepad.right_bumper) {
             pivotAwait();
@@ -72,7 +71,7 @@ public class Intake {
 
         if (gamepad.right_bumper) {
             in();
-            if (extension.getEncoder() >= 1000) {
+            if (extension.pos >= HorizontalExtension.OUT) {
                 pivotOut();
             }
         } else if (gamepad.left_bumper) {
@@ -81,11 +80,13 @@ public class Intake {
             stop();
         }
 
+        /*
         if (extension.getEncoder() < 20 && gamepad.left_trigger > 0) {
             //lift.zero();
             if (lift.getEncoderL() < 20) {
                 out();
             }
         }
+        */
     }
 }

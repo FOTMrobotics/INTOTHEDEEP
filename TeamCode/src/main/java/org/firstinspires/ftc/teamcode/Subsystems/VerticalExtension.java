@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import org.firstinspires.ftc.teamcode.Test.Util.PDFLcontrol;
 
 import java.util.HashMap;
-import java.util.HashSet;
 
 public class VerticalExtension {
     private DcMotor liftL, liftR;
@@ -50,21 +49,12 @@ public class VerticalExtension {
     }
 
     public void zero () {
-        /*
-        toTarget(0);
-        if (liftL.getCurrentPosition() <= 0) {
-            resetEncoders();
-            setPowers(0);
-        } else {
-            toTarget(0);
-        }
-        */
         setPowers(0);
         resetEncoders();
     }
 
     public void max () {
-        toTarget(map.get(state.HIGH));
+        toTarget(3750);
     }
 
     public void setPowers (double power) {
@@ -93,9 +83,9 @@ public class VerticalExtension {
         //double power = up - down;
         double power = -gamepad.left_stick_y;
 
-        if (liftL.getCurrentPosition() <= map.get(state.ZERO) && power <= 0 || touchSensor.isPressed()) {
+        if (liftL.getCurrentPosition() <= 50 && power <= 0 || touchSensor.isPressed()) {
             zero();
-        } else if (liftL.getCurrentPosition() >= map.get(state.HIGH) - 50 && power >= 0) {
+        } else if (liftL.getCurrentPosition() >= 3700 && power >= 0) {
             max();
         } else if (power != 0) {
             setPowers(power);
@@ -108,6 +98,7 @@ public class VerticalExtension {
         }
     }
 
+    /*
     public void updateState () {
         int position = liftL.getCurrentPosition();
 
@@ -119,6 +110,7 @@ public class VerticalExtension {
             currentState = state.HIGH;
         }
     }
+    */
 
     public int getTarget () {
         return target;
