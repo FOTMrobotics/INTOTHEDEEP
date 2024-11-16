@@ -40,7 +40,7 @@ public class MecanumDrive {
     public MecanumDrive(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
         setMotors(this.motorNames);
-        this.motors.get(1).setDirection(DcMotorSimple.Direction.REVERSE);
+        this.motors.get(0).setDirection(DcMotorSimple.Direction.REVERSE);
         this.motors.get(2).setDirection(DcMotorSimple.Direction.REVERSE);
         setSparkFunOTOS("otos");
     }
@@ -150,14 +150,14 @@ public class MecanumDrive {
     }
 
     public void mecanumDrive (Gamepad gamepad) {
-        //double x = gamepad.left_stick_x;
-        //double y = -gamepad.left_stick_y;
-        //double r = gamepad.right_stick_x;
+        double x = gamepad.left_stick_x;
+        double y = -gamepad.left_stick_y;
+        double r = gamepad.right_stick_x;
 
         // kaden's funky control scheme
-        double x = -gamepad.left_stick_x;
-        double y = gamepad.right_stick_y;
-        double r = gamepad.right_stick_x;
+        //double x = -gamepad.left_stick_x;
+        //double y = gamepad.right_stick_y;
+        //double r = gamepad.right_stick_x;
 
         runMotors(new double[] {
                 y + x + r,

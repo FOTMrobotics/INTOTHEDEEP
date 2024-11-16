@@ -7,7 +7,16 @@ public class Claw {
     private Servo pivot, claw;
 
     public Claw (HardwareMap hardwareMap) {
-        pivot = hardwareMap.get(Servo.class, "clawPivot");
         claw = hardwareMap.get(Servo.class, "claw");
     }
+
+    public void open() {
+        claw.setPosition(0);
+    }
+
+    public void close() {
+        claw.setPosition(1);
+
+    }
+
 }
