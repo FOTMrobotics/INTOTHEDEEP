@@ -19,20 +19,7 @@ public class colorTest extends LinearOpMode {
         }
 
         while (opModeIsActive()) {
-            /*
-            int[] x = colors.test();
-            telemetry.addData("red", x[0]);
-            telemetry.addData("blue", x[1]);
-            telemetry.addData("green", x[2]);
-
-            telemetry.update();
-
-             */
-            float[] x = colors.test();
-            telemetry.addData("red", x[0]);
-            telemetry.addData("blue", x[1]);
-            telemetry.addData("geen", x[2]);
-            telemetry.update();
+            colors.test(gamepad1, telemetry);
         }
     }
 }
