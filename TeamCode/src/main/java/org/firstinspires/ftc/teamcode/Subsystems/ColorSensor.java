@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -18,10 +19,12 @@ import java.util.Arrays;
 
 public class ColorSensor {
     NormalizedColorSensor colorSensor;
-    float gain = 3;
+    DistanceSensor distanceSensor;
+    float gain = 17;
 
     public ColorSensor (HardwareMap hardwareMap) {
         colorSensor = hardwareMap.get(NormalizedColorSensor.class, "colorSensor");
+        distanceSensor = hardwareMap.get(DistanceSensor.class, "colorSensor");
     }
 
     public enum color {
@@ -62,7 +65,7 @@ public class ColorSensor {
 
         int[] redTarget = {255, 0, 0};
         int[] blueTarget = {0, 0, 255};
-        int[] yellowTarget = {200, 255, 0};
+        int[] yellowTarget = {255, 255, 0};
 
         if (gamepad1.a) {
             // Only increase the gain by a small amount, since this loop will occur multiple times per second.
@@ -73,17 +76,33 @@ public class ColorSensor {
         colorSensor.setGain(gain);
         telemetry.addData("Gain", gain);
 
+
+
         float red = colors.red;
         float blue = colors.blue;
         float green = colors.green;
 
-        float[] measured = {red, blue, green};
+        red *= 1000;
+        blue *= 1000;
+        green *= 1000;
 
-        double redDistance = distance(redTarget, measured);
-        double blueDistance = distance(blueTarget, measured);
-        double yellowDistance = distance(yellowTarget, measured);
+        float[] measured = {red, green, blue};
+
+        double redDistance = color_distance(redTarget, measured);
+        double blueDistance = color_distance(blueTarget, measured);
+        double yellowDistance = color_distance(yellowTarget, measured);
         double x = 0;
 
+        /*
+        telemetry.addData("red ", red);
+        telemetry.addData("blue ", blue);
+        telemetry.addData("green ", green);
+
+        telemetry.addData("red distance", redDistance);
+        telemetry.addData("blue distance", blueDistance);
+        telemetry.addData("yellow distance", yellowDistance);
+
+         */
         if (redDistance < blueDistance && redDistance < yellowDistance) {
             x = redDistance;
             telemetry.addData("red", x);
@@ -93,7 +112,7 @@ public class ColorSensor {
             telemetry.addData("blue", x);
         }
         if (yellowDistance < redDistance && yellowDistance < blueDistance){
-            yellowDistance = x;
+            x = yellowDistance;
             telemetry.addData("yellow", x);
         }
 
@@ -101,9 +120,15 @@ public class ColorSensor {
         return x;
     }
 
-    public double distance(int[] targetVal, float[] measured) {
+    public double color_distance(int[] targetVal, float[] measured) {
         double colorDistance = Math.sqrt(Math.pow(targetVal[2]-measured[2],2)+Math.pow(targetVal[1]-measured[1],2)+Math.pow(targetVal[0]-measured[0],2));
 
         return colorDistance;
+
+    }
+
+    public double distance(){
+        double sample_distance = distanceSensor.getDistance(DistanceUnit.MM);
+        return  sample_distance;
     }
 }
