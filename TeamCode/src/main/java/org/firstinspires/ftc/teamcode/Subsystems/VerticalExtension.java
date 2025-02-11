@@ -42,6 +42,7 @@ public class VerticalExtension {
         liftL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        // TODO: May need to change
         map.put(State.ZERO, 0);
         map.put(State.MAX, 2450);
 

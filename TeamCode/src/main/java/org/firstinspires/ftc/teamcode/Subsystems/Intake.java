@@ -29,6 +29,7 @@ public class Intake {
         intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
         colorSensor = new ColorSensor(hardwareMap, "intakeColorSensor");
 
+        // TODO: May need to be updated
         map.put(State.OUT, 0.49);
         map.put(State.AWAIT, 0.23);
         map.put(State.IN, 0.02);

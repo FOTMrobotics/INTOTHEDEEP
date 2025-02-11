@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+// TODO: Finish after the hang is built
+//  Current hardware objects need to be changed
 public class Hang {
     Servo backHookL;
     Servo backHookR;

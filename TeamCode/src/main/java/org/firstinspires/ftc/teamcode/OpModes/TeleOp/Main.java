@@ -8,11 +8,11 @@ import org.firstinspires.ftc.teamcode.Subsystems.Bucket;
 import org.firstinspires.ftc.teamcode.Subsystems.Claw;
 import org.firstinspires.ftc.teamcode.Subsystems.HorizontalExtension;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
-import org.firstinspires.ftc.teamcode.Subsystems.SpecimenTransfer;
 import org.firstinspires.ftc.teamcode.Subsystems.Sweeper;
 import org.firstinspires.ftc.teamcode.Subsystems.VerticalExtension;
 import org.firstinspires.ftc.teamcode.trailblazer.drivebase.Drive;
 
+// TODO: Make a red and blue alliance preset so samples can be filtered
 @TeleOp(name = "Main")
 public class Main extends LinearOpMode {
 

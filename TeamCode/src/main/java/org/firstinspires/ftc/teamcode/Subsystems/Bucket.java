@@ -7,6 +7,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import java.util.HashMap;
 
+// TODO: Add sample filtering
+//  Have list that includes all of the samples to be filtered
+//  Preset tele/auto with the filters already selected
+//  Options to disable filter
 public class Bucket {
     private Servo bucketFlap;
 
@@ -25,6 +29,7 @@ public class Bucket {
         bucketFlap = hardwareMap.get(Servo.class, "bucketFlap");
         beamBreak = hardwareMap.get(DigitalChannel.class, "beamBreak");
 
+        // TODO: Test
         map.put(State.OPEN, 0.0);
         map.put(State.CLOSE, 1.0);
 

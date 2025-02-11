@@ -23,6 +23,7 @@ public class Sweeper {
     public Sweeper(HardwareMap hardwareMap) {
         sweeper = hardwareMap.get(Servo.class, "sweeper");
 
+        // TODO: Test positions
         map.put(State.IN, 0.65);
         map.put(State.OUT, 0.31);
 

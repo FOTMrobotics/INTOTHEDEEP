@@ -33,6 +33,7 @@ public class HorizontalExtension {
         linkageR = hardwareMap.get(Servo.class, "linkageR");
         limitSwitch = hardwareMap.get(TouchSensor.class, "linkageLimitSwitch");
 
+        // TODO: May need to be updated
         map.put(State.ZERO, 0.33);
         map.put(State.OUT, 0.54); // 0.5
         map.put(State.MAX, 0.76);
