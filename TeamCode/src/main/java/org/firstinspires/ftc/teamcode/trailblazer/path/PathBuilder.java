@@ -17,8 +17,6 @@ public class PathBuilder {
 
     private Drive drive;
 
-    double eventRange = 5;
-
     Spline spline = new Spline(new ArrayList<>());
     ArrayList<Object> eventQueue = new ArrayList<>();
     int n = 0;
@@ -41,23 +39,23 @@ public class PathBuilder {
         return this;
     }
 
-    public PathBuilder setEventRange(double range) {
-        eventRange = range;
-        return this;
-    }
-
     public PathBuilder headingFollow() {
         event(() -> {path.headingState = Path.State.HEADING_FOLLOW;});
         return this;
     }
 
-    public PathBuilder headingFollow(Vector2D point) {
-        event(point, () -> {path.headingState = Path.State.HEADING_FOLLOW;});
+    public PathBuilder headingFollow(Path.EventType eventType) {
+        event(() -> {path.headingState = Path.State.HEADING_FOLLOW;}, eventType);
         return this;
     }
 
     public PathBuilder headingFollow(double t) {
         event(t, () -> {path.headingState = Path.State.HEADING_FOLLOW;});
+        return this;
+    }
+
+    public PathBuilder headingFollow(double t, Path.EventType eventType) {
+        event(t, () -> {path.headingState = Path.State.HEADING_FOLLOW;}, eventType);
         return this;
     }
 
@@ -69,11 +67,11 @@ public class PathBuilder {
         return this;
     }
 
-    public PathBuilder headingConstant(Vector2D point, double angle) {
-        event(point, () -> {
+    public PathBuilder headingConstant(double angle, Path.EventType eventType) {
+        event(() -> {
             path.headingState = Path.State.HEADING_CONSTANT;
             path.headingValue = angle;
-        });
+        }, eventType);
         return this;
     }
 
@@ -85,6 +83,14 @@ public class PathBuilder {
         return this;
     }
 
+    public PathBuilder headingConstant(double t, double angle, Path.EventType eventType) {
+        event(t, () -> {
+            path.headingState = Path.State.HEADING_CONSTANT;
+            path.headingValue = angle;
+        }, eventType);
+        return this;
+    }
+
     public PathBuilder headingOffset(double angle) {
         event(() -> {
             path.headingState = Path.State.HEADING_OFFSET;
@@ -93,11 +99,11 @@ public class PathBuilder {
         return this;
     }
 
-    public PathBuilder headingOffset(Vector2D point, double angle) {
-        event(point, () -> {
+    public PathBuilder headingOffset(double angle, Path.EventType eventType) {
+        event(() -> {
             path.headingState = Path.State.HEADING_OFFSET;
             path.headingValue = angle;
-        });
+        }, eventType);
         return this;
     }
 
@@ -106,6 +112,14 @@ public class PathBuilder {
             path.headingState = Path.State.HEADING_OFFSET;
             path.headingValue = angle;
         });
+        return this;
+    }
+
+    public PathBuilder headingOffset(double t, double angle, Path.EventType eventType) {
+        event(t, () -> {
+            path.headingState = Path.State.HEADING_OFFSET;
+            path.headingValue = angle;
+        }, eventType);
         return this;
     }
 
@@ -124,8 +138,8 @@ public class PathBuilder {
         return this;
     }
 
-    public PathBuilder pause(Vector2D point, Callable<Boolean> condition) {
-        event(point, () -> {
+    public PathBuilder pause(Callable<Boolean> condition, Path.EventType eventType) {
+        event(() -> {
             path.pathState = Path.State.PAUSE;
             try {
                 if (condition.call()) {
@@ -135,7 +149,7 @@ public class PathBuilder {
                 return false;
             }
             catch (Exception e) {throw new RuntimeException(e);}
-        });
+        }, eventType);
         return this;
     }
 
@@ -151,6 +165,21 @@ public class PathBuilder {
             }
             catch (Exception e) {throw new RuntimeException(e);}
         });
+        return this;
+    }
+
+    public PathBuilder pause(double t, Callable<Boolean> condition, Path.EventType eventType) {
+        event(t, () -> {
+            path.pathState = Path.State.PAUSE;
+            try {
+                if (condition.call()) {
+                    path.pathState = Path.State.CONTINUE;
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception e) {throw new RuntimeException(e);}
+        }, eventType);
         return this;
     }
 
@@ -171,8 +200,8 @@ public class PathBuilder {
         return this;
     }
 
-    public PathBuilder toPose(Vector2D point, Pose2D pose, Callable<Boolean> condition) {
-        event(point, () -> {
+    public PathBuilder toPose(Pose2D pose, Callable<Boolean> condition, Path.EventType eventType) {
+        event(() -> {
             path.pathState = Path.State.PAUSE;
             path.targetPose = pose;
             try {
@@ -184,7 +213,7 @@ public class PathBuilder {
                 return false;
             }
             catch (Exception e) {throw new RuntimeException(e);}
-        });
+        }, eventType);
         return this;
     }
 
@@ -204,44 +233,63 @@ public class PathBuilder {
         return this;
     }
 
+    public PathBuilder toPose(double t, Pose2D pose, Callable<Boolean> condition, Path.EventType eventType) {
+        event(t, () -> {
+            path.pathState = Path.State.PAUSE;
+            path.targetPose = pose;
+            try {
+                if (condition.call()) {
+                    path.pathState = Path.State.CONTINUE;
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception e) {throw new RuntimeException(e);}
+        }, eventType);
+        return this;
+    }
+
     public PathBuilder xScale(double scale) {
-        if (scale < 0 || scale > 1) throw new RuntimeException("Scale must be between 0 and 1.");
         event(() -> {drive.xScale = scale;});
         return this;
     }
 
-    public PathBuilder xScale(Vector2D point, double scale) {
-        if (scale < 0 || scale > 1) throw new RuntimeException("Scale must be between 0 and 1.");
-        event(point, () -> {drive.xScale = scale;});
+    public PathBuilder xScale(double scale, Path.EventType eventType) {
+        event(() -> {drive.xScale = scale;}, eventType);
         return this;
     }
 
     public PathBuilder xScale(Double t, double scale) {
-        if (scale < 0 || scale > 1) throw new RuntimeException("Scale must be between 0 and 1.");
         event(t, () -> {drive.xScale = scale;});
         return this;
     }
 
+    public PathBuilder xScale(Double t, double scale, Path.EventType eventType) {
+        event(t, () -> {drive.xScale = scale;}, eventType);
+        return this;
+    }
+
     public PathBuilder yScale(double scale) {
-        if (scale < 0 || scale > 1) throw new RuntimeException("Scale must be between 0 and 1.");
         event(() -> {drive.yScale = scale;});
         return this;
     }
 
-    public PathBuilder yScale(Vector2D point, double scale) {
-        if (scale < 0 || scale > 1) throw new RuntimeException("Scale must be between 0 and 1.");
-        event(point, () -> {drive.yScale = scale;});
+    public PathBuilder yScale(double scale, Path.EventType eventType) {
+        event(() -> {drive.yScale = scale;}, eventType);
         return this;
     }
 
     public PathBuilder yScale(Double t, double scale) {
-        if (scale < 0 || scale > 1) throw new RuntimeException("Scale must be between 0 and 1.");
         event(t, () -> {drive.yScale = scale;});
         return this;
     }
 
+    public PathBuilder yScale(Double t, double scale, Path.EventType eventType) {
+        event(t, () -> {drive.yScale = scale;}, eventType);
+        return this;
+    }
+
     public PathBuilder translationalScale(double scale) {
-        if (scale < 0 || scale > 1) throw new RuntimeException("Scale must be between 0 and 1.");
         event(() -> {
             drive.xScale = scale;
             drive.yScale = scale;
@@ -249,17 +297,15 @@ public class PathBuilder {
         return this;
     }
 
-    public PathBuilder translationalScale(Vector2D point, double scale) {
-        if (scale < 0 || scale > 1) throw new RuntimeException("Scale must be between 0 and 1.");
-        event(point, () -> {
+    public PathBuilder translationalScale(double scale, Path.EventType eventType) {
+        event(() -> {
             drive.xScale = scale;
             drive.yScale = scale;
-        });
+        }, eventType);
         return this;
     }
 
     public PathBuilder translationalScale(Double t, double scale) {
-        if (scale < 0 || scale > 1) throw new RuntimeException("Scale must be between 0 and 1.");
         event(t, () -> {
             drive.xScale = scale;
             drive.yScale = scale;
@@ -267,21 +313,31 @@ public class PathBuilder {
         return this;
     }
 
+    public PathBuilder translationalScale(Double t, double scale, Path.EventType eventType) {
+        event(t, () -> {
+            drive.xScale = scale;
+            drive.yScale = scale;
+        }, eventType);
+        return this;
+    }
+
     public PathBuilder angularScale(double scale) {
-        if (scale < 0 || scale > 1) throw new RuntimeException("Scale must be between 0 and 1.");
         event(() -> {drive.angularScale = scale;});
         return this;
     }
 
-    public PathBuilder angularScale(Vector2D point, double scale) {
-        if (scale < 0 || scale > 1) throw new RuntimeException("Scale must be between 0 and 1.");
-        event(point, () -> {drive.angularScale = scale;});
+    public PathBuilder angularScale(double scale, Path.EventType eventType) {
+        event(() -> {drive.angularScale = scale;}, eventType);
         return this;
     }
 
     public PathBuilder angularScale(Double t, double scale) {
-        if (scale < 0 || scale > 1) throw new RuntimeException("Scale must be between 0 and 1.");
         event(t, () -> {drive.angularScale = scale;});
+        return this;
+    }
+
+    public PathBuilder angularScale(Double t, double scale, Path.EventType eventType) {
+        event(t, () -> {drive.angularScale = scale;}, eventType);
         return this;
     }
 
@@ -290,8 +346,18 @@ public class PathBuilder {
         return this;
     }
 
-    public PathBuilder action(Vector2D point, Callable<Boolean> action) {
-        event(point, action);
+    public PathBuilder action(Callable<Boolean> action, Path.EventType eventType) {
+        event(action, eventType);
+        return this;
+    }
+
+    public PathBuilder action(Runnable action) {
+        event(action);
+        return this;
+    }
+
+    public PathBuilder action(Runnable action, Path.EventType eventType) {
+        event(action, eventType);
         return this;
     }
 
@@ -300,80 +366,90 @@ public class PathBuilder {
         return this;
     }
 
+    public PathBuilder action(Double t, Callable<Boolean> action, Path.EventType eventType) {
+        event(t, action, eventType);
+        return this;
+    }
+
+    public PathBuilder action(Double t, Runnable action) {
+        event(t, action);
+        return this;
+    }
+
+    public PathBuilder action(Double t, Runnable action, Path.EventType eventType) {
+        event(t, action, eventType);
+        return this;
+    }
+
     private void event(Callable<Boolean> event) {
-        eventQueue.add(new Event(new Vector2D(Double.NaN, Double.NaN), eventRange, event));
-        eventQueue.add(0x00);
+        eventQueue.add(new Event(Integer.MIN_VALUE, 0, event));
         eventQueue.add(n);
+        eventQueue.add(Path.EventType.PARALLEL);
+    }
+
+    private void event(Callable<Boolean> event, Path.EventType eventType) {
+        eventQueue.add(new Event(Integer.MIN_VALUE, 0, event));
+        eventQueue.add(n);
+        eventQueue.add(eventType);
     }
 
     private void event(Runnable event) {
-        eventQueue.add(new Event(new Vector2D(Double.NaN, Double.NaN), eventRange, event));
-        eventQueue.add(0x00);
+        eventQueue.add(new Event(Integer.MIN_VALUE, 0, event));
         eventQueue.add(n);
+        eventQueue.add(Path.EventType.PARALLEL);
     }
 
-    public void event(Vector2D point, Callable<Boolean> event) {
-        eventQueue.add(new Event(point, eventRange, event));
-        eventQueue.add(0x01);
-    }
-
-    public void event(Vector2D point, Runnable event) {
-        eventQueue.add(new Event(point, eventRange, event));
-        eventQueue.add(0x01);
+    private void event(Runnable event, Path.EventType eventType) {
+        eventQueue.add(new Event(Integer.MIN_VALUE, 0, event));
+        eventQueue.add(n);
+        eventQueue.add(eventType);
     }
 
     public void event(Double t, Callable<Boolean> event) {
-        eventQueue.add(new Event(new Vector2D(Double.NaN, Double.NaN), eventRange, event));
-        eventQueue.add(0x02);
+        eventQueue.add(new Event(Integer.MIN_VALUE, t, event));
         eventQueue.add(n);
-        eventQueue.add(t);
+        eventQueue.add(Path.EventType.PARALLEL);
+    }
+
+    public void event(Double t, Callable<Boolean> event, Path.EventType eventType) {
+        eventQueue.add(new Event(Integer.MIN_VALUE, t, event));
+        eventQueue.add(n);
+        eventQueue.add(eventType);
     }
 
     public void event(Double t, Runnable event) {
-        eventQueue.add(new Event(new Vector2D(Double.NaN, Double.NaN), eventRange, event));
-        eventQueue.add(0x02);
+        eventQueue.add(new Event(Integer.MIN_VALUE, t, event));
         eventQueue.add(n);
-        eventQueue.add(t);
+        eventQueue.add(Path.EventType.PARALLEL);
+    }
+
+    public void event(Double t, Runnable event, Path.EventType eventType) {
+        eventQueue.add(new Event(Integer.MIN_VALUE, t, event));
+        eventQueue.add(n);
+        eventQueue.add(eventType);
     }
 
     public Path build() {
         Vector2D endPt = spline.getPt(spline.getLength()-1);
         spline.addPt(endPt);
 
-        while (!eventQueue.isEmpty()) {
-            Event event = (Event) eventQueue.get(0);
-
-            switch ((int) eventQueue.get(1) & 0x03) {
-                case 0:
-                    event.setPt(spline.getPt((int) eventQueue.get(2)));
-                    path.events.add(event);
-
-                    eventQueue.subList(0, 3).clear();
-                    break;
-                case 1:
-                    path.events.add(event);
-
-                    eventQueue.subList(0, 2).clear();
-                    break;
-                case 2:
-                    int segment = Math.min(Math.max(0, (int) eventQueue.get(2) - 1), spline.getLength() - 4);
-                    event.setPt(spline.getPoint(segment, (double) eventQueue.get(3)));
-                    path.events.add(event);
-
-                    eventQueue.subList(0, 4).clear();
-                    break;
-            }
-        }
-
-        path.events.add(new Event(endPt, 5, () -> {
-            path.pathState = Path.State.PAUSE;
-            path.targetPose.setX(endPt.getX());
-            path.targetPose.setY(endPt.getY());
-
+        event(0.85, () -> {
             if (drive.atTarget()) path.pathState = Path.State.STOP;
 
             return false;
-        }));
+        });
+
+        while (!eventQueue.isEmpty()) {
+            Event event = (Event) eventQueue.get(0);
+
+            int segment = Math.min(Math.max(0, (int) eventQueue.get(1) - 1), spline.getLength() - 4);
+            event.setSegment(segment);
+            path.events.add(event);
+
+            path.eventType.put(event, (Path.EventType) eventQueue.get(2));
+
+            eventQueue.subList(0, 3).clear();
+        }
 
         path.finalize(drive, spline);
 

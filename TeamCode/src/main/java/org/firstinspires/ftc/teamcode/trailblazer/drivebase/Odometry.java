@@ -27,7 +27,7 @@ public class Odometry {
 
         OTOS.setAngularScalar(driveValues.angularScalar);
 
-        Pose2D offset = new Pose2D(2.5,-6.1875,0);
+        //Pose2D offset = new Pose2D(2.5,-6.1875,0);
         OTOS.setOffset(driveValues.offset);
 
         OTOS.calibrateImu();

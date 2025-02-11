@@ -6,47 +6,43 @@ import java.util.concurrent.Callable;
 
 public class Event {
 
-    private Vector2D pt;
+    private int segment;
+    private double t;
+
     private Callable<Boolean> callable;
 
-    private double range = 5;
-
-    public Event(Vector2D pt, double range, Callable<Boolean> action) {
-        this.pt = pt;
-        this.range = range;
+    public Event(Integer segment, double t, Callable<Boolean> action) {
+        this.segment = segment;
+        this.t = t;
         this.callable = action;
     }
 
-    public Event(Vector2D pt, double range, Runnable action) {
-        this.pt = pt;
-        this.range = range;
+    public Event(Integer segment, double t, Runnable action) {
+        this.segment = segment;
+        this.t = t;
         this.callable = () -> {
             action.run();
             return true;
         };
     }
 
-    public double distance(Vector2D pos) {
-        return pos.minus(pt).norm();
-    }
-
-    public boolean inRange(Vector2D pos) {
-        return distance(pos) < range;
-    }
-
     public boolean call() throws Exception {
         return callable.call();
     }
 
-    public double getRange() {
-        return range;
+    public int getSegment() {
+        return segment;
     }
 
-    public void setRange(double range) {
-        this.range = range;
+    public void setSegment(int segment) {
+        this.segment = segment;
     }
 
-    public void setPt(Vector2D pt) {
-        this.pt.set(pt);
+    public double getnterpolation() {
+        return t;
+    }
+
+    public void setInterpolation(double t) {
+        this.t = t;
     }
 }

@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode.trailblazer.path;
 
 import static org.fotmrobotics.trailblazer.PathKt.driveVector;
 
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
 import org.firstinspires.ftc.teamcode.trailblazer.drivebase.Drive;
 import org.fotmrobotics.trailblazer.MathKt;
 import org.fotmrobotics.trailblazer.PIDF;
@@ -11,15 +14,17 @@ import org.fotmrobotics.trailblazer.Vector2D;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class Path {
+    private LinearOpMode opMode = new LinearOpMode() {
+        @Override
+        public void runOpMode() throws InterruptedException {
+
+        }
+    };
+
     Drive drive;
     Spline spline = new Spline();
-    ArrayList<Event> events = new ArrayList<>();
-    HashMap<Event, Boolean> eventType = new HashMap<>();
-    ArrayList<Event> sequentialQueue = new ArrayList<>();
-    ArrayList<Event> parallelQueue = new ArrayList<>();
 
     PIDF translationPIDF = new PIDF(0.5, 0, 0, 0);
 
@@ -30,6 +35,14 @@ public class Path {
         HEADING_FOLLOW,
         HEADING_OFFSET,
         HEADING_CONSTANT
+    }
+
+    ArrayList<Event> events = new ArrayList<>();
+    HashMap<Event, EventType> eventType = new HashMap<>();
+
+    enum EventType {
+        SEQUENTIAL,
+        PARALLEL
     }
 
     State headingState = State.HEADING_FOLLOW;
@@ -46,23 +59,58 @@ public class Path {
         this.spline = spline;
     }
 
-    public Path(Spline spline, HashMap<Vector2D, ArrayList<Event>> events) {
-        this.spline = spline;
-        //this.events = events;
-    }
-
-    public Path(Drive drive, Spline spline) {
-        this.drive = drive;
-        this.spline = spline;
-        ArrayList<Event> eventlist = new ArrayList<>();
-    }
-
-    // TODO: for actions store them all in a hashmap with each object mapped to the corresponding grid
     public void run() {
+        pathState = State.CONTINUE;
+
+        ArrayList<Event> tempEvents = new ArrayList<>(events);
+
+        ArrayList<Event> sequentialQueue = new ArrayList<>();
+        ArrayList<Event> parallelQueue = new ArrayList<>();
+
         while (pathState != State.STOP) {
+            if (opMode.isStopRequested()) pathState = State.STOP;
+
             Pose2D pos = drive.odometry.getPosition();
 
             Pose2D driveVector = driveVector(spline, pos, translationPIDF);
+
+            double t = spline.getClosestPoint(pos);
+
+            ArrayList<Event> removeEvents = new ArrayList<>();
+            for (Event event : tempEvents) {
+                if (event.getnterpolation() <= t && event.getSegment() == spline.getSegment()) {
+                    switch(eventType.get(event)) {
+                        case PARALLEL:
+                            parallelQueue.add(event);
+                        case SEQUENTIAL:
+                            sequentialQueue.add(event);
+                    }
+                    removeEvents.add(event);
+                }
+            }
+            tempEvents.removeAll(removeEvents);
+
+            ArrayList<Event> removeQueue = new ArrayList<>();
+            for (Event event : parallelQueue) {
+                try {
+                    boolean condition = event.call();
+
+                    if (condition) removeQueue.add(event);
+                }
+
+                catch (Exception e) {throw new RuntimeException(e);}
+            }
+            parallelQueue.removeAll(removeQueue);
+
+            if (!sequentialQueue.isEmpty()) {
+                try {
+                    if (sequentialQueue.get(0).call()) {
+                        sequentialQueue.remove(0);
+                    }
+                }
+
+                catch (Exception e) {throw new RuntimeException(e);}
+            }
 
             switch (headingState) {
                 case HEADING_FOLLOW:
@@ -78,52 +126,27 @@ public class Path {
 
             switch (pathState) {
                 case CONTINUE:
-                    double t = spline.getClosestPoint(pos);
+                    drive.moveVector(new Pose2D(driveVector.getX(), driveVector.getY(), headingTarget), true);
+
+                    targetPose.set(new Pose2D(pos.getX(), pos.getY(), headingTarget));
+
+                    if (t > 0.85 && spline.getLength() - 4 == spline.getSegment()) {
+                        pathState = State.PAUSE;
+
+                        Vector2D endPt = spline.getPt(spline.getLength() - 1);
+                        targetPose.set(new Pose2D(endPt.getX(), endPt.getY(), headingTarget));
+                    }
+
                     if (t >= 1) {
                         spline.incSegment();
                     }
 
-                    drive.moveVector(new Pose2D(driveVector.getX(), driveVector.getY(), headingTarget), true);
-
-                    targetPose.set(new Pose2D(pos.getX(), pos.getY(), headingTarget));
                     break;
                 case PAUSE:
                     drive.movePoint(targetPose);
+
                     break;
             }
-
-            for (Event event : parallelQueue) {
-                try {
-                    boolean condition = event.call();
-
-                    if (condition) {parallelQueue.remove(event);}
-                }
-
-                catch (Exception e) {throw new RuntimeException(e);}
-            }
-
-            if (!sequentialQueue.isEmpty()) {
-                try {
-                    if (sequentialQueue.get(0).call()) {
-                        sequentialQueue.remove(0);
-                    }
-                }
-
-                catch (Exception e) {throw new RuntimeException(e);}
-            }
-
-            ArrayList<Event> remove = new ArrayList<>();
-            for (Event event : events) {
-                if (event.inRange(pos)) {
-                    parallelQueue.add(event);
-                    //boolean isSequential = Boolean.TRUE.equals(eventType.get(event));
-
-                    //if (isSequential) {sequentialQueue.add(event);}
-                    //else {parallelQueue.add(event);}
-                    remove.add(event);
-                }
-            }
-            events.removeAll(remove);
         }
     }
 }

@@ -38,6 +38,8 @@ public class Drive {
         for (int i : driveValues.reverseMotors) {
             motors.get(i).setDirection(DcMotorSimple.Direction.REVERSE);
         }
+
+        Pose2D pose = new Pose2D(10, 20, 60);
     }
 
     private final List<DcMotor> motors = new ArrayList<>();
@@ -95,13 +97,17 @@ public class Drive {
         moveVector(pose, true);
     }
 
-    Pose2D target;
+    public Pose2D target;
     public void movePoint(Pose2D point) {
         target = point;
         Pose2D currentPos = odometry.getPosition();
+
         Vector2D difference = point.minus(currentPos);
+
         double out = Math.min(positionPID.update(difference.norm()), 1);
+
         Vector2D result = difference.times(out);
+
         moveVector(new Pose2D(result.getX(), result.getY(), point.getH()), true);
     }
 
@@ -114,22 +120,31 @@ public class Drive {
     public boolean atTarget() {
         Pose2D currentPos = odometry.getPosition();
 
+        //double distance = currentPos.minus(target).norm();
+
         timesChecked = Math.sqrt(
                 Math.pow(currentPos.getX() - lastPos.getX(), 2) +
-                Math.pow(currentPos.getY() - lastPos.getY(), 2)
-        ) < 0.01 &&
+                Math.pow(currentPos.getY() - lastPos.getY(), 2)) < 0.01 &&
                 Math.abs(currentPos.getH() - lastPos.getH()) < 0.01 ?
                 timesChecked + 1 : 0;
         lastPos.set(currentPos);
-        return timesChecked > 5;
+        return timesChecked > 4;
     }
 
     private boolean rotate = true;
-    private double targetDriveHeading = 0;
+    public double targetDriveHeading = 0; // TODO: make private
     public void mecanumDrive (Gamepad gamepad) {
+        // Normal drive controls
         double x = gamepad.left_stick_x;
         double y = -gamepad.left_stick_y;
         double r = gamepad.right_stick_x;
+
+        // Kaden's drive controls
+        /*
+        double x = -gamepad.left_stick_x;
+        double y = gamepad.right_stick_y;
+        double r = gamepad.right_stick_x;
+        */
 
         double currentHeading = odometry.getPosition().getH();
 
