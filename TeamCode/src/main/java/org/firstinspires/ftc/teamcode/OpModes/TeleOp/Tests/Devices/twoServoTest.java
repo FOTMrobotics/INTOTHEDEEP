@@ -4,12 +4,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp(name = "Servo", group = "Tests")
-public class servoTest extends LinearOpMode {
+@TeleOp(name = "Two Servos", group = "Tests")
+public class twoServoTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Servo servo = hardwareMap.get(Servo.class, "servo");
+        Servo servoL = hardwareMap.get(Servo.class, "servoL");
+        Servo servoR = hardwareMap.get(Servo.class, "servoR");
 
         double setPosition = 0;
         double increment = 0.01;
@@ -62,9 +63,11 @@ public class servoTest extends LinearOpMode {
                       gamepad1.y || gamepad1.x || gamepad1.a || gamepad1.b;
 
             if (gamepad1.left_trigger > 0) {
-                servo.setPosition(setPosition);
+                servoL.setPosition(setPosition);
+                servoR.setPosition(setPosition);
             } else if (gamepad1.left_bumper) {
-                servo.setPosition(gamepad1.right_trigger);
+                servoL.setPosition(gamepad1.right_trigger);
+                servoR.setPosition(gamepad1.right_trigger);
             }
 
             telemetry.addLine("Values:");

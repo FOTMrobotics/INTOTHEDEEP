@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.HorizontalExtension;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.VerticalExtension;
 
-@TeleOp(name = "intake", group = "Subsystems")
+@TeleOp(name = "Intake", group = "Subsystems")
 public class intakeTest extends LinearOpMode {
 
     @Override
@@ -26,7 +26,7 @@ public class intakeTest extends LinearOpMode {
             linkage.update(gamepad1);
             lift.update(gamepad1);
 
-            intake.update(linkage, gamepad1);
+            intake.update(linkage, linkage.atZero() && lift.atZero(), gamepad1);
 
             telemetry.addLine("Values:");
             telemetry.addData("State", linkage.getState());

@@ -9,6 +9,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.util.HashMap;
 
+// TODO: Add sample filtering
+//  Have list that includes all of the samples to be filtered
+//  Preset tele/auto with the filters already selected
+//  Options to disable filter
 public class Intake {
     private Servo pivot;
     private DcMotor intakeMotor;
@@ -29,10 +33,9 @@ public class Intake {
         intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
         colorSensor = new ColorSensor(hardwareMap, "intakeColorSensor");
 
-        // TODO: May need to be updated
-        map.put(State.OUT, 0.49);
-        map.put(State.AWAIT, 0.23);
-        map.put(State.IN, 0.02);
+        map.put(State.OUT, 0.45);
+        map.put(State.AWAIT, 0.2);
+        map.put(State.IN, 0.0);
     }
 
     public State getState() {
@@ -60,7 +63,7 @@ public class Intake {
         intakeMotor.setPower(0);
     }
 
-    public void update(HorizontalExtension linkage, Gamepad gamepad) {
+    public void update(HorizontalExtension linkage, boolean atZero, Gamepad gamepad) {
         if (linkage.pos <= linkage.map.get(HorizontalExtension.State.OUT)) setState(State.IN);
         else if (!gamepad.right_bumper) setState(State.AWAIT);
 
@@ -74,7 +77,7 @@ public class Intake {
         }
         else stop();
 
-        //if (linkage.getState() == HorizontalExtension.State.ZERO && lift.atZero() && gamepad.right_stick_x < 0) outtake();
+        if (linkage.getState() == HorizontalExtension.State.ZERO && atZero && gamepad.right_stick_x < 0) intakeMotor.setPower(0.8);
     }
 
     public double getDistance() {

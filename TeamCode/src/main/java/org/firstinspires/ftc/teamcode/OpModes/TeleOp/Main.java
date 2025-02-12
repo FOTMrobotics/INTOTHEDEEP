@@ -43,7 +43,11 @@ public class Main extends LinearOpMode {
             claw.update(gamepad1);
 
             linkage.update(gamepad2);
-            intake.update(linkage, gamepad2);
+            intake.update(linkage,linkage.atZero(), gamepad2);
+            double[] positions = linkage.getEncoderPositions();
+            telemetry.addData("L", positions[0]);
+            telemetry.addData("R", positions[1]);
+            telemetry.update();
             sweeper.update(gamepad2);
         }
     }

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -11,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 public class HorizontalExtension {
     private Servo linkageL, linkageR;
-    private TouchSensor limitSwitch;
+    private AnalogInput linkageLEncoder, linkageREncoder;
 
     private State state;
 
@@ -30,13 +31,13 @@ public class HorizontalExtension {
 
     public HorizontalExtension(HardwareMap hardwareMap) {
         linkageL = hardwareMap.get(Servo.class, "linkageL");
+        linkageLEncoder = hardwareMap.get(AnalogInput.class, "linkageLEncoder");
         linkageR = hardwareMap.get(Servo.class, "linkageR");
-        limitSwitch = hardwareMap.get(TouchSensor.class, "linkageLimitSwitch");
+        linkageREncoder = hardwareMap.get(AnalogInput.class, "linkageREncoder");
 
-        // TODO: May need to be updated
         map.put(State.ZERO, 0.33);
-        map.put(State.OUT, 0.54); // 0.5
-        map.put(State.MAX, 0.76);
+        map.put(State.OUT, 0.54);
+        map.put(State.MAX, 0.85);
 
         setPosition(map.get(State.ZERO));
     }
@@ -62,6 +63,13 @@ public class HorizontalExtension {
         }
     }
 
+    public double[] getEncoderPositions() {
+        double posL = linkageLEncoder.getVoltage() / 3.3 * 360;
+        double posR = linkageREncoder.getVoltage() / 3.3 * 360;
+
+        return new double[] {posL, posR};
+    }
+
     public void zero() {
         setState(State.ZERO);
     }
@@ -79,7 +87,13 @@ public class HorizontalExtension {
     }
 
     public boolean atZero() {
-        return limitSwitch.isPressed();
+        double[] positions = getEncoderPositions();
+
+        double TARGETL = 207.5; // out = negative direction
+        double TARGETR = 153.3; // out = positive direction
+        double TOLERANCE = 10;
+
+        return positions[0] > TARGETL - TOLERANCE && positions[1] < TARGETR + TOLERANCE;
     }
 
     private ElapsedTime timer = new ElapsedTime();

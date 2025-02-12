@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Subsystems.ColorSensor;
 
-@TeleOp(name = "colorSensor", group = "Tests")
+@TeleOp(name = "Color Sensor", group = "Tests")
 public class colorSensorTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

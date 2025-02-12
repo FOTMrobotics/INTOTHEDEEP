@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Hang;
 
-@TeleOp(name = "hang", group = "Subsystems")
+@TeleOp(name = "Hang", group = "Subsystems")
 public class hangTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
