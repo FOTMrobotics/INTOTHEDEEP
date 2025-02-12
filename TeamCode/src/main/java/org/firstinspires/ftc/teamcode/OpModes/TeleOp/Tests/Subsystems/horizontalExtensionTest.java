@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Subsystems.HorizontalExtension;
 
-@TeleOp(name = "horizontalExtension", group = "Subsystems")
+@TeleOp(name = "Horizontal Extension", group = "Subsystems")
 public class horizontalExtensionTest extends LinearOpMode {
 
     @Override
@@ -24,6 +24,9 @@ public class horizontalExtensionTest extends LinearOpMode {
             telemetry.addLine("Values:");
             telemetry.addData("State", linkage.getState());
             telemetry.addData("Position", linkage.pos);
+            double[] positions = linkage.getEncoderPositions();
+            telemetry.addData("Left", positions[0]);
+            telemetry.addData("Right", positions[1]);
             telemetry.update();
         }
     }

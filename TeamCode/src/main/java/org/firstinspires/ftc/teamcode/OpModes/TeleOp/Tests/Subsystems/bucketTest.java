@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Bucket;
 
-@TeleOp(name = "bucket", group = "Subsystems")
+@TeleOp(name = "Bucket", group = "Subsystems")
 public class bucketTest extends LinearOpMode {
 
     @Override

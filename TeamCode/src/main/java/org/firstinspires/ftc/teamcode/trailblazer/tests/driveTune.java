@@ -13,7 +13,7 @@ import org.fotmrobotics.trailblazer.Pose2D;
 import org.fotmrobotics.trailblazer.Vector2D;
 
 @Config
-@TeleOp(name = "driveTune", group = "Tests")
+@TeleOp(name = "Drive Tune", group = "Tests")
 public class driveTune extends LinearOpMode {
     public static int position = 500;
     @Override

@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 
-@TeleOp(name = "continuousServo", group = "Tests")
+@TeleOp(name = "Continuous Servo", group = "Tests")
 public class continuousServoTest extends LinearOpMode {
 
     @Override

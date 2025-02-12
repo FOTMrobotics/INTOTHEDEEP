@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Subsystems.VerticalExtension;
 
-@TeleOp(name = "verticalExtension", group = "Subsystems")
+@TeleOp(name = "Vertical Extension", group = "Subsystems")
 public class verticalExtensionTest extends LinearOpMode {
 
     @Override

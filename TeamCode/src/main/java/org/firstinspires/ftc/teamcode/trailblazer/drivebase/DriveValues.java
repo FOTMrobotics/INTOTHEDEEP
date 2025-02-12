@@ -22,7 +22,7 @@ public class DriveValues {
             "backRight"
     };
 
-    int[] reverseMotors = {1};
+    int[] reverseMotors = {1,3};
 
     PIDF positionPID = new PIDF(0.005, 0, 0,0);
     PIDF headingPID = new PIDF(0.01, 0,0,0);
@@ -35,9 +35,9 @@ public class DriveValues {
     AngleUnit angularUnit = AngleUnit.DEGREES;
     double angularScalar = 1;
 
-    Pose2D offset = new Pose2D(4,6, 0);
+    Pose2D offset = new Pose2D(0,3.1, 0);
 
-    double xScale = 0.25;
-    double yScale = 0.25;
+    double xScale = 1;
+    double yScale = 1;
     double angularScale = 1;
 }

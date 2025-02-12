@@ -28,10 +28,10 @@ public class Claw {
         claw = hardwareMap.get(Servo.class, "claw");
         pivot = hardwareMap.get(Servo.class, "clawPivot");
 
-        map.put(State.OPEN, 0.45); // TODO: Change value
-        map.put(State.CLOSE, 0.67); // TODO: Change value
-        map.put(State.PIVOT_OUT, 0.0); // TODO: Change value
-        map.put(State.PIVOT_IN, 0.0); // TODO: Change value
+        map.put(State.OPEN, 0.53);
+        map.put(State.CLOSE, 0.64);
+        map.put(State.PIVOT_OUT, 0.86);
+        map.put(State.PIVOT_IN, 0.24);
 
         setState(State.CLOSE);
     }
