@@ -29,11 +29,12 @@ public class Claw {
         pivot = hardwareMap.get(Servo.class, "clawPivot");
 
         map.put(State.OPEN, 0.53);
-        map.put(State.CLOSE, 0.64);
+        map.put(State.CLOSE, 0.63);
         map.put(State.PIVOT_OUT, 0.86);
         map.put(State.PIVOT_IN, 0.24);
 
-        setState(State.CLOSE);
+        close();
+        in();
     }
 
     public State getClawState() {
@@ -72,8 +73,26 @@ public class Claw {
         setState(State.PIVOT_IN);
     }
 
-    public void update(Gamepad gamepad) {
-        if (gamepad.left_bumper) setState(State.OPEN);
-        else setState(State.CLOSE);
+    boolean pressed = false;
+    public void update(Gamepad gamepad1, Gamepad gamepad2) {
+        if (pivotState == State.PIVOT_OUT) {
+            if (gamepad1.left_bumper) setState(State.OPEN);
+            else setState(State.CLOSE);
+        }
+
+        if (!pressed) {
+            if (gamepad2.left_stick_button) {
+                switch (pivotState) {
+                    case PIVOT_OUT:
+                        in();
+                        break;
+                    case PIVOT_IN:
+                        out();
+                        break;
+                }
+            }
+        }
+
+        pressed = gamepad2.left_stick_button;
     }
 }

@@ -36,7 +36,7 @@ public class HorizontalExtension {
         linkageREncoder = hardwareMap.get(AnalogInput.class, "linkageREncoder");
 
         map.put(State.ZERO, 0.33);
-        map.put(State.OUT, 0.54);
+        map.put(State.OUT, 0.56);
         map.put(State.MAX, 0.85);
 
         setPosition(map.get(State.ZERO));

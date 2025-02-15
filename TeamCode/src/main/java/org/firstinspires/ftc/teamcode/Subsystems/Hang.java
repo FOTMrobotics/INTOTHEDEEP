@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import android.graphics.Color;
+
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -10,40 +12,37 @@ import com.qualcomm.robotcore.hardware.Servo;
 // TODO: Finish after the hang is built
 //  Current hardware objects need to be changed
 public class Hang {
-    Servo backHookL;
-    Servo backHookR;
-    Servo pinLock;
-    CRServo frontHookL;
-    CRServo frontHookR;
-    DcMotor pivot;
+    Servo hookPivot;
+    DcMotor hooks;
 
     private State state;
 
-    enum State {}
+    enum State {
+        HOOKS_UP,
+        HOOKS_DOWN
+    }
 
     public Hang(HardwareMap hardwareMap) {
-        backHookL = hardwareMap.get(Servo.class, "backHookL");
-        backHookR = hardwareMap.get(Servo.class, "backHookR");
-        pinLock = hardwareMap.get(Servo.class, "pinLock");
-        frontHookL = hardwareMap.get(CRServo.class, "frontHookL");
-        frontHookR = hardwareMap.get(CRServo.class, "frontHookR");
-        pivot = hardwareMap.get(DcMotor.class, "hangPivot");
+        hookPivot = hardwareMap.get(Servo.class, "hookPivot");
+        hooks = hardwareMap.get(DcMotor.class, "hooks");
 
-        pivot.setDirection(DcMotorSimple.Direction.REVERSE);
+        hooks.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        resetEncoder();
+    }
+
+    public void resetEncoder() {
+        hooks.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hooks.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void update(Gamepad gamepad) {
-        pivot.setPower(gamepad.right_trigger - gamepad.left_trigger);
-
-        if (gamepad.left_bumper) {
-            frontHookL.setPower(-1);
-            frontHookR.setPower(-1);
-        } else if (gamepad.right_bumper) {
-            frontHookL.setPower(1);
-            frontHookR.setPower(1);
+        if (gamepad.dpad_up) {
+            hooks.setPower(1);
+        } else if (gamepad.dpad_down) {
+            hooks.setPower(-1);
         } else {
-            frontHookL.setPower(0);
-            frontHookR.setPower(0);
+            hooks.setPower(0);
         }
     }
 }

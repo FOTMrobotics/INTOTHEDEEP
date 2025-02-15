@@ -124,11 +124,11 @@ public class Drive {
 
         timesChecked = Math.sqrt(
                 Math.pow(currentPos.getX() - lastPos.getX(), 2) +
-                Math.pow(currentPos.getY() - lastPos.getY(), 2)) < 0.01 &&
-                Math.abs(currentPos.getH() - lastPos.getH()) < 0.01 ?
+                Math.pow(currentPos.getY() - lastPos.getY(), 2)) < 0.05 &&
+                Math.abs(currentPos.getH() - lastPos.getH()) < 0.05 ?
                 timesChecked + 1 : 0;
         lastPos.set(currentPos);
-        return timesChecked > 4;
+        return timesChecked > 2;
     }
 
     private boolean rotate = true;

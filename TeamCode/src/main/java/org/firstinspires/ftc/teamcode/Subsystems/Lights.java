@@ -70,15 +70,14 @@ public class Lights {
         double time = timer.time(TimeUnit.MILLISECONDS);
         int blank = Color.rgb(0, 0, 0);
 
-        if (time >= 70){
+        if (time >= 100) {
             switch (effect) {
                 case BLINKING:
-                    //fix blinking logic
                     LEDS.fill(colors);
-                    if (x){
+                    if (x) {
                         LEDS.fill(blank);
                         x = false;
-                    }else{
+                    } else {
                         x = true;
                     }
                     break;

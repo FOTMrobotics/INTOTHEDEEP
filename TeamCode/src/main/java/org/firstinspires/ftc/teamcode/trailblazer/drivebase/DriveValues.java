@@ -24,7 +24,7 @@ public class DriveValues {
 
     int[] reverseMotors = {1,3};
 
-    PIDF positionPID = new PIDF(0.005, 0, 0,0);
+    PIDF positionPID = new PIDF(0.09, 0,0.12,0);
     PIDF headingPID = new PIDF(0.01, 0,0,0);
 
     String SparkFunOTOS = "otos";

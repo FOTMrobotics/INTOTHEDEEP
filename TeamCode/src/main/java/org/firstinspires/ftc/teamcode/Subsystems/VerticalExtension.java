@@ -17,7 +17,7 @@ public class VerticalExtension {
     private int target;
     private boolean breakLift = true;
 
-    private PIDF pidf = new PIDF(0.025, 0, 0, 0); //0.05
+    private PIDF pidf = new PIDF(0.028, 0, 0.3, 0.1);
 
     private State state;
 
@@ -62,8 +62,6 @@ public class VerticalExtension {
         liftR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-
     }
 
     public void zero() {
@@ -78,8 +76,13 @@ public class VerticalExtension {
 
     public void setPowers(double power) {
         if (!atZero() || power >= 0) {
-            liftL.setPower(Math.max(-0.5, power));
-            liftR.setPower(Math.max(-0.5, power));
+            if (getCurrentPosition() < 100) {
+                liftL.setPower(Math.max(-0.75, power)); // -0.75
+                liftR.setPower(Math.max(-0.75, power)); // -0.75
+            } else {
+                liftL.setPower(power);
+                liftR.setPower(power);
+            }
         }
     }
 
@@ -127,7 +130,7 @@ public class VerticalExtension {
         return (getEncoderL() + getEncoderR()) / 2;
     }
 
-    private int tolerance = 15;
+    private int tolerance = 20; // 10
     public boolean atTarget() {
         return target > getCurrentPosition() - tolerance && target < getCurrentPosition() + tolerance;
     }

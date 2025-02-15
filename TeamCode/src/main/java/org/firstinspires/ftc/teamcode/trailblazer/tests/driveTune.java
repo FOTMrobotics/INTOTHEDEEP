@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Subsystems.HorizontalExtension;
+import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.VerticalExtension;
 import org.firstinspires.ftc.teamcode.trailblazer.drivebase.Drive;
 import org.fotmrobotics.trailblazer.Pose2D;
@@ -21,6 +22,8 @@ public class driveTune extends LinearOpMode {
         FtcDashboard dashboard = FtcDashboard.getInstance();
         Telemetry dashboardTelemetry = dashboard.getTelemetry();
         Drive drive = new Drive(hardwareMap);
+        HorizontalExtension linkage = new HorizontalExtension(hardwareMap);
+        Intake intake = new Intake(hardwareMap);
 
         waitForStart();
 

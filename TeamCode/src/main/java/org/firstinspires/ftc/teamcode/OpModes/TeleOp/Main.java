@@ -6,10 +6,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Bucket;
 import org.firstinspires.ftc.teamcode.Subsystems.Claw;
-import org.firstinspires.ftc.teamcode.Subsystems.ColorSensor;
+import org.firstinspires.ftc.teamcode.Subsystems.Hang;
 import org.firstinspires.ftc.teamcode.Subsystems.HorizontalExtension;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
-import org.firstinspires.ftc.teamcode.Subsystems.Lights;
 import org.firstinspires.ftc.teamcode.Subsystems.Sweeper;
 import org.firstinspires.ftc.teamcode.Subsystems.VerticalExtension;
 import org.firstinspires.ftc.teamcode.trailblazer.drivebase.Drive;
@@ -17,8 +16,6 @@ import org.firstinspires.ftc.teamcode.trailblazer.drivebase.Drive;
 // TODO: Make a red and blue alliance preset so samples can be filtered
 @TeleOp(name = "Main")
 public class Main extends LinearOpMode {
-
-    ColorSensor.Color color = ColorSensor.Color.NONE;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -28,7 +25,7 @@ public class Main extends LinearOpMode {
         lift.resetEncoders();
         Bucket bucket = new Bucket(hardwareMap);
 
-        Lights light = new Lights(hardwareMap);
+        Hang hang = new Hang(hardwareMap);
 
         Claw claw = new Claw(hardwareMap);
 
@@ -46,26 +43,14 @@ public class Main extends LinearOpMode {
             lift.update(gamepad2);
             bucket.update(gamepad1);
 
-            claw.update(gamepad1);
+            hang.update(gamepad1);
+
+            claw.update(gamepad1, gamepad2);
 
             linkage.update(gamepad2);
-            intake.update(linkage,linkage.atZero(), gamepad2);
-            double[] positions = linkage.getEncoderPositions();
-            telemetry.addData("L", positions[0]);
-            telemetry.addData("R", positions[1]);
-            telemetry.update();
+            intake.update(linkage,linkage.atZero() && lift.atZero(), gamepad2);
+
             sweeper.update(gamepad2);
-
-            boolean sampleIn = intake.sampleIn();
-            if (intake.sampleIn()) {color = intake.getColor();}
-
-            if (sampleIn) {
-                light.LEDState(Lights.State.SOLID, color);
-            }else if (bucket.samplePresent()) {
-                light.LEDState(Lights.State.BLINKING, color);
-            }else {
-                light.LEDState(Lights.State.NONE, ColorSensor.Color.NONE);
-            }
         }
     }
 }
