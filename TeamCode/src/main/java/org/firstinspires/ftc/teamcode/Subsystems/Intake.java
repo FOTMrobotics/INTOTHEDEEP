@@ -18,6 +18,10 @@ public class Intake {
     private DcMotor intakeMotor;
     private ColorSensor colorSensor;
 
+    private ColorSensor.Color color = ColorSensor.Color.NONE;
+
+    private ColorSensor.Color filterColor = ColorSensor.Color.NONE;
+
     private State state;
 
     public enum State {
@@ -38,6 +42,10 @@ public class Intake {
         map.put(State.IN, 0.0);
     }
 
+    public void setFilter(ColorSensor.Color color) {
+        filterColor = color;
+    }
+
     public State getState() {
         return state;
     }
@@ -48,7 +56,15 @@ public class Intake {
     }
 
     public void intake() {
-        intakeMotor.setPower(-1);
+        color = colorSensor.getColor();
+
+        if (color == filterColor) {
+            outtake();
+            setState(State.AWAIT);
+        } else {
+            intakeMotor.setPower(-1);
+            setState(State.OUT);
+        }
     }
 
     public void outtake() {
@@ -63,21 +79,23 @@ public class Intake {
         intakeMotor.setPower(0);
     }
 
-    public void update(HorizontalExtension linkage, boolean atZero, Gamepad gamepad) {
-        if (linkage.pos <= linkage.map.get(HorizontalExtension.State.OUT)) setState(State.IN);
-        else if (!gamepad.right_bumper) setState(State.AWAIT);
+    public void update(double linkagePos, boolean atZero, Gamepad gamepad) {
+        if (linkagePos <= 0.56) setState(State.IN); // out position
+        else if (!(gamepad.right_trigger > 0)) setState(State.AWAIT);
 
-        if (gamepad.right_bumper) {
-            if (linkage.pos >= linkage.map.get(HorizontalExtension.State.OUT)) setState(State.OUT);
+        if (gamepad.right_trigger > 0) {
+            if (linkagePos >= 0.56) setState(State.OUT); // out position
             intake();
         }
-        else if (gamepad.left_bumper) {
-            if (linkage.pos == linkage.map.get(HorizontalExtension.State.ZERO)) intakeMotor.setPower(0.8);
+
+        else if (gamepad.left_trigger > 0) {
+            if (linkagePos == 0.33) intakeMotor.setPower(0.8); // zero position
             else outtake();
         }
+
         else stop();
 
-        if (linkage.getState() == HorizontalExtension.State.ZERO && atZero && gamepad.right_stick_x < 0) intakeMotor.setPower(0.8);
+        if (atZero && gamepad.right_stick_x < 0) intakeMotor.setPower(0.8);
     }
 
     public double getDistance() {
@@ -85,7 +103,11 @@ public class Intake {
     }
 
     public ColorSensor.Color getColor() {
-        return colorSensor.getColor();
+        return color;
+    }
+
+    public void readColor() {
+        color = colorSensor.getColor();
     }
 
     public boolean sampleIn() {

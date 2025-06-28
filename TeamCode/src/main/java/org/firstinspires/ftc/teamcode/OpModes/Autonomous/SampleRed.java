@@ -19,8 +19,8 @@ import org.fotmrobotics.trailblazer.Vector2D;
 
 import java.util.concurrent.TimeUnit;
 
-@Autonomous(name = "Sample")
-public class Sample extends LinearOpMode {
+@Autonomous(name = "Sample (Red)")
+public class SampleRed extends LinearOpMode {
     ElapsedTime timer;
     Drive drive;
 
@@ -177,6 +177,35 @@ public class Sample extends LinearOpMode {
                 .pt(new Vector2D(-55, 2))
                 .build();
 
+        Path scoreForth = new PathBuilder(drive, new Vector2D(-55,2))
+                .translationalScale(0.8)
+                .action(() -> {
+                    if (linkage.atZero()) {
+                        intake.intakePower(0.8);
+                    }
+
+                    if (bucket.samplePresent()) {
+                        intake.stop();
+                    }
+
+                    return bucket.samplePresent();
+                })
+                .headingConstant(0)
+                .pt(new Vector2D(-33,-20))
+                .translationalScale(0.5)
+                .headingConstant(45)
+                .pt(new Vector2D(-8,-20))
+                .build();
+
+        Path scoreForthNoIntake = new PathBuilder(drive, new Vector2D(-55,2))
+                .translationalScale(0.8)
+                .headingConstant(0)
+                .pt(new Vector2D(-33,-20))
+                .translationalScale(0.5)
+                .headingConstant(45)
+                .pt(new Vector2D(-8,-20))
+                .build();
+
         waitForStart();
 
         if (isStopRequested()) return;
@@ -321,6 +350,103 @@ public class Sample extends LinearOpMode {
         bucket.close();
 
         grabForth.run();
+
+        linkage.out(1);
+
+        timer.reset();
+        while (timer.time(TimeUnit.MILLISECONDS) < 100) {
+            if (isStopRequested()) break;
+        }
+
+        drive.xScale = 1;
+        drive.yScale = 1;
+        drive.angularScale = 1;
+
+        timer.reset();
+        while (timer.time(TimeUnit.MILLISECONDS) < 775) {
+            drive.moveVector(new Pose2D(-0.7,0, 0)); // 0.6
+            intake.intake();
+            intake.setState(Intake.State.OUT);
+
+            if (intake.sampleIn()) break;
+
+            if (isStopRequested()) break;
+        }
+
+        timer.reset();
+        while (timer.time(TimeUnit.MILLISECONDS) < 775) {
+            drive.moveVector(new Pose2D(0.7,0, 0));
+            intake.intake();
+            intake.setState(Intake.State.OUT);
+
+            if (intake.sampleIn()) break;
+
+            if (isStopRequested()) break;
+        }
+
+        timer.reset();
+        while (timer.time(TimeUnit.MILLISECONDS) < 400) {
+            if (isStopRequested()) break;
+        }
+
+        // possibly grab
+
+        intake.readColor();
+        if (intake.getColor() == ColorSensor.Color.BLUE) {
+            intake.setState(Intake.State.AWAIT);
+            intake.outtake();
+
+            while (timer.time(TimeUnit.MILLISECONDS) < 1000) {
+                if (isStopRequested()) break;
+            }
+
+            intake.setState(Intake.State.IN);
+            intake.stop();
+
+            timer.reset();
+            while (timer.time(TimeUnit.MILLISECONDS) < 400) {
+                if (isStopRequested()) break;
+            }
+
+            linkage.zero();
+
+            scoreForthNoIntake.run();
+        } else {
+            intake.setState(Intake.State.IN);
+
+            timer.reset();
+            while (timer.time(TimeUnit.MILLISECONDS) < 100) {
+                if (isStopRequested()) break;
+            }
+
+            linkage.zero();
+            intake.stop();
+
+            scoreForth.run();
+
+            /*
+            while (!lift.atTarget()) {
+                lift.toTarget(2450);
+
+                if (isStopRequested()) break;
+            }
+            while (bucket.samplePresent()) {
+                bucket.open();
+                lift.toTarget(2450);
+
+                if (isStopRequested()) break;
+            }
+
+            timer.reset();
+            while (timer.time(TimeUnit.MILLISECONDS) < 300) {
+                lift.toTarget(2450); // 400
+
+                if (isStopRequested()) break;
+            }
+
+            bucket.close();
+            */
+        }
     }
 
     public void intake(double start, double increment) { // 0.0075
@@ -341,7 +467,7 @@ public class Sample extends LinearOpMode {
             if (isStopRequested()) break;
         }
 
-        intake.intakePower(-1);
+        intake.intake();
 
         double t = start;
         while (t <= 0.85) {

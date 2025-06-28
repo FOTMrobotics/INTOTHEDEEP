@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.trailblazer.drivebase;
 
 import static org.fotmrobotics.trailblazer.MathKt.angleWrap;
 
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -30,6 +31,12 @@ public class Drive {
 
     public Drive(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
+
+        List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
+
+        for (LynxModule hub : allHubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+        }
 
         odometry = new Odometry(hardwareMap);
 
@@ -140,11 +147,9 @@ public class Drive {
         double r = gamepad.right_stick_x;
 
         // Kaden's drive controls
-        /*
-        double x = -gamepad.left_stick_x;
-        double y = gamepad.right_stick_y;
-        double r = gamepad.right_stick_x;
-        */
+        //double x = -gamepad.left_stick_x;
+        //double y = gamepad.right_stick_y;
+        //double r = gamepad.right_stick_x;
 
         double currentHeading = odometry.getPosition().getH();
 

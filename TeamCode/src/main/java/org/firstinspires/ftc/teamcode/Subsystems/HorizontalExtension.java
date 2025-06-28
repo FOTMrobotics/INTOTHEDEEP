@@ -27,7 +27,7 @@ public class HorizontalExtension {
 
     public double pos;
 
-    private final static double SCALE = 0.05; // 0.025
+    private final static double SCALE = 0.1; // 0.025 0.05
 
     public HorizontalExtension(HardwareMap hardwareMap) {
         linkageL = hardwareMap.get(Servo.class, "linkageL");
@@ -37,7 +37,7 @@ public class HorizontalExtension {
 
         map.put(State.ZERO, 0.33);
         map.put(State.OUT, 0.56);
-        map.put(State.MAX, 0.85);
+        map.put(State.MAX, 1.0); // 0.85
 
         setPosition(map.get(State.ZERO));
     }
@@ -104,10 +104,10 @@ public class HorizontalExtension {
         if (pos == map.get(State.ZERO) && power > 0) {
             out();
         } else if (pos <= map.get(State.OUT) && power < 0) {
-            resetTimer = timer.time(TimeUnit.MILLISECONDS) > 300;
+            resetTimer = timer.time(TimeUnit.MILLISECONDS) > 200;
             if (resetTimer) timer.reset();
 
-            boolean toZero = timer.time(TimeUnit.MILLISECONDS) <= 300 && timer.time(TimeUnit.MILLISECONDS) >= 200;
+            boolean toZero = timer.time(TimeUnit.MILLISECONDS) <= 200 && timer.time(TimeUnit.MILLISECONDS) >= 100;
             if (toZero) zero();
         } else if (pos >= map.get(State.OUT) && Math.abs(power) > 0) {
             setPosition(Math.min(Math.max(map.get(State.OUT), pos + power * SCALE), map.get(State.MAX)));

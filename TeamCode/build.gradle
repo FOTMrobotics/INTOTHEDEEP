@@ -30,5 +30,5 @@ repositories {
 
 dependencies {
     implementation project(':FtcRobotController')
-    implementation 'com.github.FOTMrobotics:TrailBlazer:f9af4474b0'
+    implementation 'com.github.FOTMrobotics:TrailBlazer:7a1ba64d7a'
 }

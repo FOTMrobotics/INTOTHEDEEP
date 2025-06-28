@@ -19,8 +19,8 @@ import org.firstinspires.ftc.teamcode.trailblazer.drivebase.Drive;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-@TeleOp(name = "Main")
-public class Main extends LinearOpMode {
+@TeleOp(name = "Main (Red)")
+public class MainRed extends LinearOpMode {
 
     ColorSensor.Color color = ColorSensor.Color.NONE;
 
@@ -49,6 +49,7 @@ public class Main extends LinearOpMode {
 
         HorizontalExtension linkage = new HorizontalExtension(hardwareMap);
         Intake intake = new Intake(hardwareMap);
+        intake.setFilter(ColorSensor.Color.BLUE);
         Sweeper sweeper = new Sweeper(hardwareMap);
 
         Lights lights = new Lights(hardwareMap);

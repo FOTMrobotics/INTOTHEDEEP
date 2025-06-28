@@ -26,7 +26,8 @@ public class intakeTest extends LinearOpMode {
             linkage.update(gamepad1);
             lift.update(gamepad1);
 
-            intake.update(linkage, linkage.atZero() && lift.atZero(), gamepad1);
+            double linkagePos = linkage.pos;
+            intake.update(linkagePos, linkage.atZero() && lift.atZero(), gamepad1);;
 
             telemetry.addLine("Values:");
             telemetry.addData("State", linkage.getState());

@@ -30,8 +30,8 @@ public class Claw {
 
         map.put(State.OPEN, 0.53);
         map.put(State.CLOSE, 0.63);
-        map.put(State.PIVOT_OUT, 0.86);
-        map.put(State.PIVOT_IN, 0.24);
+        map.put(State.PIVOT_OUT, 0.07);
+        map.put(State.PIVOT_IN, 0.75);
 
         close();
         in();

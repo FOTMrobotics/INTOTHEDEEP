@@ -45,7 +45,6 @@ public class verticalExtensionTest extends LinearOpMode {
             telemetry.addData("Right Encoder", lift.getEncoderR());
             telemetry.addData("Target", lift.getTarget());
             telemetry.addData("At Zero", lift.atZero());
-            telemetry.addData("Power", lift.power);
             telemetry.update();
             dashboardTelemetry.update();
         }

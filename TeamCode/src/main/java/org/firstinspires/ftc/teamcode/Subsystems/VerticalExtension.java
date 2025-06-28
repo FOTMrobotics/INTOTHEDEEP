@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -9,6 +10,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import org.fotmrobotics.trailblazer.PIDF;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class VerticalExtension {
     private DcMotor liftL, liftR;
@@ -17,7 +19,12 @@ public class VerticalExtension {
     private int target;
     private boolean breakLift = true;
 
-    private PIDF pidf = new PIDF(0.028, 0, 0.3, 0.1);
+    private double p = 0.025;
+    private double i = 0;
+    private double d = 0;
+    private double f = 0;
+
+    private PIDF pidf = new PIDF(p, i, d, f);
 
     private State state;
 
@@ -33,6 +40,12 @@ public class VerticalExtension {
     public HashMap<State, Integer> map = new HashMap<State, Integer>();
 
     public VerticalExtension(HardwareMap hardwareMap) {
+        List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
+
+        for (LynxModule hub : allHubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+        }
+
         liftL = hardwareMap.get(DcMotor.class, "liftL");
         liftR = hardwareMap.get(DcMotor.class, "liftR");
         limitSwitch = hardwareMap.get(TouchSensor.class, "liftLimitSwitch");
@@ -51,6 +64,13 @@ public class VerticalExtension {
 
         map.put(State.LOW_BAR, 0);
         map.put(State.HIGH_BAR, 640);
+    }
+
+    public void setPIDF(double p, double i, double d, double f) {
+        this.p = p;
+        this.i = i;
+        this.d = d;
+        this.f = f;
     }
 
     public State getState() {
@@ -76,7 +96,7 @@ public class VerticalExtension {
 
     public void setPowers(double power) {
         if (!atZero() || power >= 0) {
-            if (getCurrentPosition() < 100) {
+            if (getCurrentPosition() < 150) {
                 liftL.setPower(Math.max(-0.75, power)); // -0.75
                 liftR.setPower(Math.max(-0.75, power)); // -0.75
             } else {
@@ -105,21 +125,22 @@ public class VerticalExtension {
         this.target = target;
     }
 
-    private static final double distance = 25;
+    private static final double distance = 100;
 
-    public double power = 0;
     public void update(Gamepad gamepad) {
-        power = -gamepad.left_stick_y;
+        double power = -gamepad.left_stick_y;
+
+        int position = getCurrentPosition();
 
         if (atZero() && power <= 0) {
             zero();
-        } else if (getCurrentPosition() >= map.get(State.MAX) - distance && power >= 0) {
+        } else if (position >= map.get(State.MAX) - distance && power >= 0) {
             toTarget(State.MAX);
         } else if (power != 0) {
             setPowers(power);
             breakLift = false;
         } else if (!breakLift) {
-            setTarget(getCurrentPosition());
+            setTarget(position);
             breakLift = true;
         } else {
             toTarget();

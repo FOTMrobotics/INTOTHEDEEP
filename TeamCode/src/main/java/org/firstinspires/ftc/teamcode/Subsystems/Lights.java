@@ -67,10 +67,11 @@ public class Lights {
             case NONE:
                 colors = Color.rgb(0, 0, 0);
         }
+
         double time = timer.time(TimeUnit.MILLISECONDS);
         int blank = Color.rgb(0, 0, 0);
 
-        if (time >= 100) {
+        if (time >= 650 ) {
             switch (effect) {
                 case BLINKING:
                     LEDS.fill(colors);
@@ -89,7 +90,7 @@ public class Lights {
                     break;
             }
             timer.reset();
+            LEDS.show();
         }
-        LEDS.show();
     }
 }
